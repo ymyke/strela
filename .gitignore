@@ -1,0 +1,6 @@
+.venv/
+dist/
+*.pyc
+poetry.lock
+settings.json
+http_cache.sqlite
