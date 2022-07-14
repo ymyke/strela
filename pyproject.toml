@@ -5,10 +5,17 @@ description = ""
 authors = ["ymyke <michael.naef@gmail.com>"]
 
 [tool.poetry.dependencies]
-python = "^3.9"
+python = ">=3.7,<3.10"
+slugify = "*"
+pandas = ">=1.4.3"
+yagmail = ">=0.15.280"
+tessa = ">=0.3.3"
 
 [tool.poetry.dev-dependencies]
-pytest = "^5.2"
+pytest = "*"
+black = "*"
+pylint = "*"
+ipykernel = "*"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
