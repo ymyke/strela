@@ -20,16 +20,13 @@ These are internal notes that won't make much sense to anybody other than me...
 
 - Use tessa.symbols
 - Make sure the strela package also works with a simple dict with the righth attributes
-  in the end so it doesn't have to strictly rely on symbols.
-
-
+  in the end so it doesn't have to strictly rely on symbols. -- really??
 - Get tests from fignal
 - What to do w MetricHistory?
   - Get rid of it.
-  - But keep the old code somewhere safe. -- Where?
+  - But keep the old code somewhere safe. -- Where? In some branch of fignal or strela.
   - This means we con't have P/E & P/S any longer.
 - Where to put the shelves? (cf AlertState)
-
 - Need some kind of config file that gets read w/?
   - Secrets such as mail pwd
   - Config such as alerts to be triggered??? -> tessa.symbols
