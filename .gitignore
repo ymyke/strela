@@ -1,5 +1,6 @@
 .venv/
 dist/
+data/
 *.pyc
 poetry.lock
 settings.json
