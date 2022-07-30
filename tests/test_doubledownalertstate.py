@@ -1,7 +1,6 @@
 """Test DoubleDownAlertState class"""
 
-# pylint: disable=no-member,missing-function-docstring,protected-access
-# pylint: disable=unused-argument,redefined-outer-name,too-many-lines
+# pylint: disable=missing-function-docstring
 
 import json
 import numpy as np
