@@ -6,11 +6,11 @@ authors = ["ymyke <michael.naef@gmail.com>"]
 
 [tool.poetry.dependencies]
 python = ">=3.7,<3.10"
-slugify = "*"
 pandas = ">=1.4.3"
 yagmail = ">=0.15.280"
 # ^ FIXME Use productive package when ready
 tessa = {git = "https://github.com/ymyke/tessa.git", rev = "add-symbols"}
+python-slugify = ">=5.0.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "*"
