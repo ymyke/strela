@@ -5,6 +5,7 @@ from pandas import DataFrame
 import pandas
 from . import AlertState
 
+# FIXME Rename file to fluctulertstate.py?
 
 @dataclass
 class PeriodStat:
