@@ -94,7 +94,6 @@ class FinAlert:
         self.backup_shelf()
         alerts = ""
         for ticker in self.tickers:
-            time.sleep(2)  # FIXME Is this necessary?
             # Get metric history:
             hist = self.get_metrichistory_callback(ticker).df
             if hist is None or not isinstance(hist, DataFrame) or hist.shape[0] == 0:
