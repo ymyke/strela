@@ -32,14 +32,14 @@ class FinAlert:
     # parametrization that is necessary? -- Or group some of the arguments? E.g., a
     # group of callbacks? Not sure if that would be so much better though.
 
-    _FOLDER = "./finalerts/data/"
+    _FOLDER = "c:/code/strela/data/"    # FIXME Make configurable
     _BACKUPFOLDER = os.path.join(_FOLDER, "backups")
 
     def __init__(  # pylint: disable=too-many-arguments
         self,
         alertname: str,
         metricname: str,
-        tickers: List[str],
+        tickers: List[str], # FIXME Change name to symbol?
         alertstate_class: Type[AlertState],
         get_metrichistory_callback: Callable[[str], DataFrame],
         alertstitle_callback: Callable[[str], str],
