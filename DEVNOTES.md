@@ -31,7 +31,10 @@ These are internal notes that won't make much sense to anybody other than me...
   - Secrets such as mail pwd
   - Config such as alerts to be triggered??? -> tessa.symbols
 - Use this? https://schedule.readthedocs.io/en/stable/examples.html
-
+- Look for all occurences of personal information such as my mail address or my name
+- Mark all the tests that hit the network -- like in tessa.
+- Improve doc, add pdoc
+- Try mypy?
 
 - Deployment:
   - Auf Pythonanywhere
