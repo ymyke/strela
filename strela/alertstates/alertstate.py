@@ -1,10 +1,16 @@
+"""FIXME"""
+
 from __future__ import annotations
 from abc import ABC, abstractmethod
 from pandas import DataFrame
 
 
 class AlertState(ABC):
-    """ABC for all alert state classes."""
+    """ABC for all alert state classes.
+
+    FIXME Explain the purpose of AlterState some more. Also, what are periods as
+    mentioned in `is_ringing`?.
+    """
 
     @abstractmethod
     def __init__(self, hist: DataFrame) -> None:
