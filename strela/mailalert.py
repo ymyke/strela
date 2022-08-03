@@ -2,9 +2,15 @@ import yagmail
 from .finalert import FinAlert
 from .alertstates import AlertState
 
+# FIXME Rename file to mailingalert.py
 
 class MailingAlert(FinAlert):
     """Send a mail instead of simply returning a string."""
+
+    # FIXME Should this be an adapter rather than a subclass? E.g., an adapter for text
+    # output and one for email. Then we'd have just the base class which would take an
+    # adapter as a parameter in the initializer. The email adapter would take everything
+    # it needs from the configuation.
 
     _FROM_EMAIL = "michael.naef@gmail.com"
 
@@ -29,7 +35,7 @@ class MailingAlert(FinAlert):
                 'Courier, monospace">' + alerts + "</font></pre>"
             )
             # FIXME Need userid and pwd here to set up SMTP w/ those parameters bc they
-            # cannot be taken from the keyring
+            # cannot be taken from the keyring -- make configurable
             yagmail.SMTP(self._FROM_EMAIL).send(
                 to=self.to_email,
                 subject=f"Fignal {self.metricname} {self.alertname} 📈🚨📉",
