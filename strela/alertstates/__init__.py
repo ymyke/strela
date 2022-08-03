@@ -1,3 +1,3 @@
 from .alertstate import AlertState
-from .fluctulertalertstate import FluctulertState
+from .fluctulertstate import FluctulertState
 from .doubledownalertstate import DoubleDownAlertState

@@ -5,7 +5,7 @@
 import copy
 import pandas as pd
 import pytest
-from strela.alertstates.fluctulertalertstate import FluctulertState, PeriodStat
+from strela.alertstates.fluctulertstate import FluctulertState, PeriodStat
 from .helpers import create_metric_history_df
 
 # ----- PeriodStat tests: -----
