@@ -1,4 +1,3 @@
-from abc import ABC, abstractmethod
 import glob
 import os
 import shelve
@@ -19,35 +18,25 @@ class SymbolType(Protocol):
     name: str  # FIXME Try renaming and check if we get type errors.
 
 
-class Callbacks(ABC):
+class BasicCallbacks:
+    # pylint: disable=unused-argument
     @classmethod
-    @abstractmethod
     def metrichistory(cls, symbol: SymbolType) -> DataFrame:
-        pass
-
-    @classmethod
-    @abstractmethod
-    def alerttitle(cls, symbol: SymbolType) -> str:
-        pass
-
-    @classmethod
-    @abstractmethod
-    def comments(cls, symbol: SymbolType) -> str:
-        pass
-
-
-class PriceCallbacks(Callbacks):
-    @classmethod
-    def metrichistory(cls, symbol) -> DataFrame:
-        return symbol.get_pricehistory().df  # FIXME fix this warning?
+        return DataFrame()
 
     @classmethod
     def alerttitle(cls, symbol) -> str:
         return f"{symbol.name} ⚠lert"
 
     @classmethod
-    def comments(cls, symbol) -> str:
+    def comments(cls, symbol: SymbolType) -> str:
         return ""
+
+
+class PriceCallbacks(BasicCallbacks):
+    @classmethod
+    def metrichistory(cls, symbol) -> DataFrame:
+        return symbol.get_pricehistory().df  # type: ignore
 
 
 class FinAlert:
@@ -78,7 +67,7 @@ class FinAlert:
         alertstate_class: Type[AlertState],
         alertname: str,
         metricname: str = "Price",
-        callbacks: Type[Callbacks] = PriceCallbacks,
+        callbacks: Type[BasicCallbacks] = PriceCallbacks,
     ) -> None:
         """Args:
         - metricname: The name of the metric this alert is based on (e.g., "Price")

@@ -6,27 +6,11 @@ from dataclasses import dataclass
 import re
 import pytest
 import pandas as pd
-from strela.finalert import FinAlert, Callbacks, SymbolType
+from strela.finalert import FinAlert, BasicCallbacks
 from strela.alertstates import DoubleDownAlertState, FluctulertState
 from .helpers import create_metric_history_df
 
 # FIXME Opportunities to simplify this file and the tests in here?
-
-
-class DummyCallbacks(
-    Callbacks
-):  # FIXME Can I just subclass PriceCallbacks and override metrichistory and leave the rest?
-    @classmethod
-    def metrichistory(cls, symbol: SymbolType) -> pd.DataFrame:
-        return None  # FIXME Type wrong
-
-    @classmethod
-    def alerttitle(cls, symbol: SymbolType) -> str:
-        return f"Alert title: {symbol.name}"
-
-    @classmethod
-    def comments(cls, symbol: SymbolType) -> str:
-        return ""
 
 
 @dataclass
@@ -52,7 +36,7 @@ def test_init():
         DoubleDownAlertState,
         "Alert",
         "N a*m/e",
-        callbacks=DummyCallbacks,
+        callbacks=BasicCallbacks,
     )
     assert isinstance(a, FinAlert)
     assert a.alertname == "Alert"
@@ -61,19 +45,19 @@ def test_init():
     assert a.filename == "n-a-m-e-alert"
     assert a._fullpath.endswith("n-a-m-e-alert")  # pylint: disable=protected-access
     assert a.symbols == [DummySymbol("X")]
-    assert a.callbacks == DummyCallbacks
+    assert a.callbacks == BasicCallbacks
 
 
 def test_lookup_non_existing_ticker():  # FIXME Should be a repo test
     a = FinAlert(
-        [DummySymbol("X")], DoubleDownAlertState, "x", "y", callbacks=DummyCallbacks
+        [DummySymbol("X")], DoubleDownAlertState, "x", "y", callbacks=BasicCallbacks
     )
     assert a.lookup_state("XXX") is None
 
 
 def test_update_then_lookup_ticker():  # FIXME Should be a repo test
     a = FinAlert(
-        [DummySymbol("X")], DoubleDownAlertState, "x", "y", callbacks=DummyCallbacks
+        [DummySymbol("X")], DoubleDownAlertState, "x", "y", callbacks=BasicCallbacks
     )
     assert a.lookup_state("XXX") is None
     a.update_state("XXX", "somethingtostore")
@@ -119,7 +103,7 @@ def test_generate_fluctulerts(df_changes, pattern):
     df = create_metric_history_df()
     for (timestamp, val) in df_changes:
         df.loc[timestamp, "close"] = val
-    callbacks = DummyCallbacks()
+    callbacks = BasicCallbacks()
     callbacks.metrichistory = lambda symbol: df
     alerts = FinAlert(
         [DummySymbol("EA")],
@@ -142,7 +126,7 @@ def test_generate_alerts():
     """
     df = create_metric_history_df()
     df.iloc[-1]["close"] = 0
-    callbacks = DummyCallbacks()
+    callbacks = BasicCallbacks()
     callbacks.metrichistory = lambda symbol: df
     alerts = FinAlert(
         [DummySymbol("X")],
@@ -155,7 +139,7 @@ def test_generate_alerts():
 
 
 def test_generate_alerts_empty_history():
-    callbacks = DummyCallbacks()
+    callbacks = BasicCallbacks()
     callbacks.metrichistory = lambda symbol: pd.DataFrame()
     alerts = FinAlert(
         [DummySymbol("X")], DoubleDownAlertState, "x", "y", callbacks=callbacks
@@ -175,7 +159,7 @@ def test_shelf():
     df.loc["2020-08-01", "close"] = 0.7
 
     # First call of generate_alerts should create alert for EA:
-    callbacks = DummyCallbacks()
+    callbacks = BasicCallbacks()
     callbacks.metrichistory = lambda symbol: df
     finalert = FinAlert(
         [DummySymbol("EA")],
