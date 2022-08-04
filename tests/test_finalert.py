@@ -2,23 +2,36 @@
 
 # pylint: disable=missing-function-docstring
 
+from dataclasses import dataclass
 import re
 import pytest
 import pandas as pd
-from tessa.price import PriceHistory
-from strela.finalert import FinAlert
+from strela.finalert import FinAlert, Callbacks, SymbolType
 from strela.alertstates import DoubleDownAlertState, FluctulertState
 from .helpers import create_metric_history_df
 
 # FIXME Opportunities to simplify this file and the tests in here?
 
 
-def dummy_callback(_: str) -> tuple:
-    return (None, None)
+class DummyCallbacks(
+    Callbacks
+):  # FIXME Can I just subclass PriceCallbacks and override metrichistory and leave the rest?
+    @classmethod
+    def metrichistory(cls, symbol: SymbolType) -> pd.DataFrame:
+        return None  # FIXME Type wrong
+
+    @classmethod
+    def alerttitle(cls, symbol: SymbolType) -> str:
+        return f"Alert title: {symbol.name}"
+
+    @classmethod
+    def comments(cls, symbol: SymbolType) -> str:
+        return ""
 
 
-def title_callback(ticker: str) -> str:
-    return f"Alert title: {ticker}"
+@dataclass
+class DummySymbol:
+    name: str
 
 
 @pytest.fixture(autouse=True)
@@ -35,48 +48,36 @@ def patch_shelveloc(tmpdir):
 
 def test_init():
     a = FinAlert(
+        [DummySymbol("X")],
+        DoubleDownAlertState,
         "Alert",
         "N a*m/e",
-        tickers=["X"],
-        alertstate_class=DoubleDownAlertState,
-        get_metrichistory_callback=dummy_callback,
-        alertstitle_callback=title_callback,
+        callbacks=DummyCallbacks,
     )
     assert isinstance(a, FinAlert)
     assert a.alertname == "Alert"
     assert a.metricname == "N a*m/e"
-    assert callable(a.get_metrichistory_callback)
     assert a.alertstate_class == DoubleDownAlertState
     assert a.filename == "n-a-m-e-alert"
-    assert a._fullpath.endswith("n-a-m-e-alert")    # pylint: disable=protected-access
-    assert a.tickers == ["X"]
+    assert a._fullpath.endswith("n-a-m-e-alert")  # pylint: disable=protected-access
+    assert a.symbols == [DummySymbol("X")]
+    assert a.callbacks == DummyCallbacks
 
 
-def test_lookup_non_existing_ticker():
-    w = FinAlert(
-        "x",
-        "y",
-        tickers=["X"],
-        alertstate_class=DoubleDownAlertState,
-        get_metrichistory_callback=dummy_callback,
-        alertstitle_callback=title_callback,
+def test_lookup_non_existing_ticker():  # FIXME Should be a repo test
+    a = FinAlert(
+        [DummySymbol("X")], DoubleDownAlertState, "x", "y", callbacks=DummyCallbacks
     )
-    assert w.lookup_ticker("XXX") is None
+    assert a.lookup_state("XXX") is None
 
 
-def test_update_then_lookup_ticker():
-    w = FinAlert(
-        "x",
-        "y",
-        tickers=["X"],
-        alertstate_class=DoubleDownAlertState,
-        get_metrichistory_callback=dummy_callback,
-        alertstitle_callback=title_callback,
+def test_update_then_lookup_ticker():  # FIXME Should be a repo test
+    a = FinAlert(
+        [DummySymbol("X")], DoubleDownAlertState, "x", "y", callbacks=DummyCallbacks
     )
-    assert w.lookup_ticker("XXX") is None
-    w.update_ticker("XXX", "somethingtostore")
-    res = w.lookup_ticker("XXX")
-    assert res == "somethingtostore"
+    assert a.lookup_state("XXX") is None
+    a.update_state("XXX", "somethingtostore")
+    assert a.lookup_state("XXX") == "somethingtostore"
 
 
 @pytest.mark.parametrize(
@@ -111,23 +112,21 @@ def test_update_then_lookup_ticker():
         ),
     ],
 )
-def test_generate_fluctulerts(
-    df_changes,
-    pattern,
-):
+def test_generate_fluctulerts(df_changes, pattern):
     """The generate_alerts call produces correct Fluctulert alerts -- and no alerts if
     none are to be produced.
     """
     df = create_metric_history_df()
     for (timestamp, val) in df_changes:
         df.loc[timestamp, "close"] = val
+    callbacks = DummyCallbacks()
+    callbacks.metrichistory = lambda symbol: df
     alerts = FinAlert(
-        alertname="Fluctulerts",
-        metricname="Price",
-        tickers=["EA"],
-        alertstate_class=FluctulertState,
-        get_metrichistory_callback=lambda _: PriceHistory(df=df, currency="any"),
-        alertstitle_callback=title_callback,
+        [DummySymbol("EA")],
+        FluctulertState,
+        "Fluctulerts",
+        "Price",
+        callbacks=callbacks,
     ).generate_alerts()
     # FIXME Loads of setting up FinAlerts and PriceHistories in this file. Is there a
     # more elegant solution?
@@ -143,27 +142,23 @@ def test_generate_alerts():
     """
     df = create_metric_history_df()
     df.iloc[-1]["close"] = 0
+    callbacks = DummyCallbacks()
+    callbacks.metrichistory = lambda symbol: df
     alerts = FinAlert(
-        alertname="Double Down Alerts",
-        metricname="Price",
-        tickers=["X"],
-        alertstate_class=DoubleDownAlertState,
-        get_metrichistory_callback=lambda _: PriceHistory(df=df, currency="any"),
-        alertstitle_callback=title_callback,
+        [DummySymbol("X")],
+        DoubleDownAlertState,
+        "Double Down Alerts",
+        "Price",
+        callbacks=callbacks,
     ).generate_alerts()
     assert re.search("10×", alerts, re.S)
 
 
 def test_generate_alerts_empty_history():
+    callbacks = DummyCallbacks()
+    callbacks.metrichistory = lambda symbol: pd.DataFrame()
     alerts = FinAlert(
-        alertname="x",
-        metricname="y",
-        tickers=["X"],
-        alertstate_class=DoubleDownAlertState,
-        get_metrichistory_callback=lambda _: PriceHistory(
-            df=pd.DataFrame(), currency="any"
-        ),
-        alertstitle_callback=title_callback,
+        [DummySymbol("X")], DoubleDownAlertState, "x", "y", callbacks=callbacks
     ).generate_alerts()
     assert alerts is None
 
@@ -180,25 +175,26 @@ def test_shelf():
     df.loc["2020-08-01", "close"] = 0.7
 
     # First call of generate_alerts should create alert for EA:
-    w = FinAlert(
-        alertname="Double Down Alerts",
-        metricname="Price",
-        tickers=["EA"],
-        alertstate_class=DoubleDownAlertState,
-        get_metrichistory_callback=lambda _: PriceHistory(df=df, currency="any"),
-        alertstitle_callback=title_callback,
+    callbacks = DummyCallbacks()
+    callbacks.metrichistory = lambda symbol: df
+    finalert = FinAlert(
+        [DummySymbol("EA")],
+        DoubleDownAlertState,
+        "Double Down Alerts",
+        "Price",
+        callbacks=callbacks,
     )
-    s = w.generate_alerts()
-    assert "EA" in s
+    alerts = finalert.generate_alerts()
+    assert "EA" in alerts
 
     # Second call should not create an alert:
-    s = w.generate_alerts()
-    assert s is None
+    alerts = finalert.generate_alerts()
+    assert alerts is None
 
     # Third call, after changing the price history significantly, should produce an
     # alert again:
     df.loc["2020-07-31", "close"] = 0.7
     df.loc["2020-08-01", "close"] = 0.5
-    w.get_metrichistory_callback = lambda _: PriceHistory(df=df, currency="any")
-    s = w.generate_alerts()
-    assert "EA" in s
+    finalert.callbacks.metrichistory = lambda symbol: df
+    alerts = finalert.generate_alerts()
+    assert "EA" in alerts
