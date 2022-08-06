@@ -27,7 +27,7 @@ class MailingAlert(FinAlert):
         return state.htmlify(otherstate)
 
     def watch(self) -> None:
-        """Check tickers and send a mail with all the alerts. Overrides base method."""
+        """Check symbols and send a mail with all the alerts. Overrides base method."""
         alerts = self.generate_alerts()
         if alerts is not None:
             alerts = (
