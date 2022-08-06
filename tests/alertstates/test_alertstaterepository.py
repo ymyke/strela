@@ -18,7 +18,7 @@ def patch_shelveloc(tmpdir):
 
 
 def test_init():
-    repo = AlertStateRepository("t*e#s?t-te st")
+    repo = AlertStateRepository("t*e#s?t-TE ST")
     assert repo.filename == "t-e-s-t-te-st"
     assert repo._fullpath.endswith("t-e-s-t-te-st")  # pylint: disable=protected-access
 
