@@ -61,7 +61,7 @@ class FinAlert:
     _FOLDER = "c:/code/strela/data/"  # FIXME Make configurable
     _BACKUPFOLDER = os.path.join(_FOLDER, "backups")
 
-    def __init__(  # pylint: disable=too-many-arguments
+    def __init__(
         self,
         symbols: List[SymbolType],  # FIXME Change name to symbol?
         alertstate_class: Type[AlertState],
