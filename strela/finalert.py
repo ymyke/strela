@@ -78,11 +78,11 @@ class FinAlert:
         - alertstate_class: AlertState subclass to be used to track state and determine
           whether an alert has triggered
         - get_metrichistory_callback: Callback that returns historic data for that
-          ticker and metric as a dataframe with timestamps as an index and one column
+          symbol and metric as a dataframe with timestamps as an index and one column
           with the metric
-        - altertstitle_callback: Callback that takes a ticker and returns a string with
-          this ticker's title in the alerts result string
-        - comments_callback: Callback that takes a ticker and returns a string that will
+        - altertstitle_callback: Callback that takes a symbol and returns a string with
+          this symbol's title in the alerts result string
+        - comments_callback: Callback that takes a symbol and returns a string that will
           be displayed after an alert.
 
         Additional attributes:
