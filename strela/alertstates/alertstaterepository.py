@@ -43,3 +43,24 @@ class AlertStateRepository:
         """Move a copy of the shelf files to the backup folder."""
         for file in glob.glob(self._fullpath + "*"):
             shutil.copy(file, self._BACKUPFOLDER)
+
+# FIXME Reverse the class hierarchy? Then the MemoryAlertStateRepository would not use
+# the filename attribute?
+
+class MemoryAlertStateRepository(AlertStateRepository):
+    """AlertStateRepository that is simply in memory."""
+
+    def __init__(self, _): # pylint: disable=super-init-not-called
+        self.states = {}
+
+    def lookup_state(self, symbol_name: str) -> Optional[AlertState]:
+        try:
+            return self.states[symbol_name]
+        except KeyError:
+            return None
+
+    def update_state(self, symbol_name: str, state: AlertState) -> None:
+        self.states[symbol_name] = state
+
+    def backup(self):
+        pass
