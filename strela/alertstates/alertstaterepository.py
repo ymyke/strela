@@ -1,3 +1,5 @@
+"""AlertStateRepository class"""
+
 import glob
 import shutil
 from typing import Optional
@@ -8,6 +10,13 @@ from . import AlertState
 
 
 class AlertStateRepository:
+    """Simple repository for `AlertState`s based on `shelve` package.
+
+    Note that the repo does not ensure uniqueness of symbol names. Different symbols
+    with the same name are mapped to the same repository entry. Could consider creating
+    more unique names by concatenating more information to the symbol name in the
+    future.
+    """
 
     _FOLDER = "c:/code/strela/data/"  # FIXME Make configurable
     _BACKUPFOLDER = os.path.join(_FOLDER, "backups")
