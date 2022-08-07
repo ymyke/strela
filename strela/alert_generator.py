@@ -24,7 +24,7 @@ def generate_alerts(
     metrichistory_callback: Callable[[SymbolType], pd.DataFrame],
     generate_alert_string: Callable,
     repo: AlertStateRepository,
-) -> Optional[str]:
+) -> Optional[str]: # FIXME Switch to returning list of all alert strings, empty list if none.
     """Check list of symbols and return string with alerts. Returns `None` if no alerts
     are found.
     """
