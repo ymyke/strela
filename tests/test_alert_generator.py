@@ -60,10 +60,11 @@ def test_generate_fluctulerts(df_changes, pattern):
     for (timestamp, val) in df_changes:
         df.loc[timestamp, "close"] = val
     alerts = generate_alerts(
-        which_alertstate=FluctulertState,
-        metricname="Price",
+        alert_name="Fluctulert",
+        alertstate_class=FluctulertState,
+        metric_name="Price",
+        metric_history_callback=lambda symbol: df,
         symbols=[DummySymbol("EA")],
-        metrichistory_callback=lambda symbol: df,
         generate_alert_string=basic_alert_string_generator,
         repo=MemoryAlertStateRepository("x"),
     )
@@ -82,10 +83,11 @@ def test_generate_doubledown_alerts():
     df = create_metric_history_df()
     df.iloc[-1]["close"] = 0
     alerts = generate_alerts(
-        which_alertstate=DoubleDownAlertState,
-        metricname="Price",
+        alert_name="DoubleDownAlert",
+        alertstate_class=DoubleDownAlertState,
+        metric_name="Price",
+        metric_history_callback=lambda symbol: df,
         symbols=[DummySymbol("X")],
-        metrichistory_callback=lambda symbol: df,
         generate_alert_string=basic_alert_string_generator,
         repo=MemoryAlertStateRepository("x"),
     )
@@ -94,10 +96,11 @@ def test_generate_doubledown_alerts():
 
 def test_generate_no_alerts_when_history_empty():
     alerts = generate_alerts(
-        which_alertstate=DoubleDownAlertState,
-        metricname="x",
+        alert_name="DoubleDownAlert",
+        alertstate_class=DoubleDownAlertState,
+        metric_name="x",
+        metric_history_callback=lambda symbol: pd.DataFrame(),
         symbols=[DummySymbol("X")],
-        metrichistory_callback=lambda symbol: pd.DataFrame(),
         generate_alert_string=basic_alert_string_generator,
         repo=MemoryAlertStateRepository("x"),
     )
@@ -117,10 +120,11 @@ def test_repository_triggered_alert_not_to_trigger_again():
 
     # Set up arguments for `generate_alerts`:
     args = dict(
-        which_alertstate=DoubleDownAlertState,
-        metricname="Price",
+        alert_name="DoubleDownAlert",
+        alertstate_class=DoubleDownAlertState,
+        metric_name="Price",
+        metric_history_callback=lambda symbol: df,
         symbols=[DummySymbol("EA")],
-        metrichistory_callback=lambda symbol: df,
         generate_alert_string=basic_alert_string_generator,
         repo=MemoryAlertStateRepository("x"),
     )
@@ -137,6 +141,6 @@ def test_repository_triggered_alert_not_to_trigger_again():
     # alert again:
     df.loc["2020-07-31", "close"] = 0.7
     df.loc["2020-08-01", "close"] = 0.5
-    args["metrichistory_callback"] = lambda symbol: df
+    args["metric_history_callback"] = lambda symbol: df
     alerts = generate_alerts(**args)
     assert "EA" in alerts

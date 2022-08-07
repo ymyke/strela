@@ -15,13 +15,11 @@ class SymbolType(Protocol):
 
 
 def generate_alerts(
-    # FIXME Add alertname? Maybe combine which_alertstate and alertname to a tuple?
-    # Maybe have a register of all possible alerts with their names and classes? -- Same
-    # with metricname and metric callback?
-    which_alertstate: Type[AlertState],
-    metricname: str,
+    alert_name: str,
+    alertstate_class: Type[AlertState],
+    metric_name: str,
+    metric_history_callback: Callable[[SymbolType], pd.DataFrame],
     symbols: List[SymbolType],
-    metrichistory_callback: Callable[[SymbolType], pd.DataFrame],
     generate_alert_string: Callable,
     repo: AlertStateRepository,
 ) -> Optional[str]: # FIXME Switch to returning list of all alert strings, empty list if none.
@@ -32,13 +30,13 @@ def generate_alerts(
     alerts = ""
     for symbol in symbols:
         # Get metric history:
-        hist = metrichistory_callback(symbol)
+        hist = metric_history_callback(symbol)
         if hist is None or not isinstance(hist, pd.DataFrame) or hist.shape[0] == 0:
             continue
         latest_value = hist.values[-1][0]
 
         # Create the alertstate object:
-        current_state = which_alertstate(hist)
+        current_state = alertstate_class(hist)
 
         # Get the stored/old alertstate object:
         old_state = repo.lookup_state(symbol.name)
@@ -51,7 +49,8 @@ def generate_alerts(
                 symbol,
                 current_state.stringify(old_state),
                 current_state.htmlify(old_state),
-                metricname,
+                metric_name,
+                alert_name,
                 latest_value,
             )
         # FIXME Type issues w old_state
@@ -63,12 +62,13 @@ def basic_alert_string_generator(
     symbol: SymbolType,
     alertstate_as_text: str,
     _alertstate_as_html: str,
-    metricname: str,
+    metric_name: str,
+    _alert_name: str,
     latest_value: float,
 ) -> str:
     res = f"""{symbol.name} ⚠lert
 {alertstate_as_text.rstrip()}
-Latest {metricname}: {latest_value}
+Latest {metric_name}: {latest_value}
 
 """
     try:
