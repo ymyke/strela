@@ -6,7 +6,7 @@ from dataclasses import dataclass
 import re
 import pytest
 import pandas as pd
-from strela.alert_generator import generate_alerts, basic_alert_string_generator
+from strela.alert_generator import generate_alerts, AlertToStringTemplate
 from strela.alertstates import (
     FluctulertState,
     DoubleDownAlertState,
@@ -60,12 +60,12 @@ def test_generate_fluctulerts(df_changes, pattern):
     for (timestamp, val) in df_changes:
         df.loc[timestamp, "close"] = val
     alerts = generate_alerts(
-        alert_name="Fluctulert",
         alertstate_class=FluctulertState,
-        metric_name="Price",
         metric_history_callback=lambda symbol: df,
         symbols=[DummySymbol("EA")],
-        generate_alert_string=basic_alert_string_generator,
+        template=AlertToStringTemplate("", "", "Price"),
+        # FIXME Also test categoryname and alertname? Or better have specific tests for
+        # the template.
         repo=MemoryAlertStateRepository("x"),
     )
     # ^ FIXME Have one common args dict to use in all tests and just overwrite the
@@ -83,12 +83,10 @@ def test_generate_doubledown_alerts():
     df = create_metric_history_df()
     df.iloc[-1]["close"] = 0
     alerts = generate_alerts(
-        alert_name="DoubleDownAlert",
         alertstate_class=DoubleDownAlertState,
-        metric_name="Price",
         metric_history_callback=lambda symbol: df,
         symbols=[DummySymbol("X")],
-        generate_alert_string=basic_alert_string_generator,
+        template=AlertToStringTemplate("", "", "Price"),
         repo=MemoryAlertStateRepository("x"),
     )
     assert re.search("10×", alerts, re.S)
@@ -96,12 +94,10 @@ def test_generate_doubledown_alerts():
 
 def test_generate_no_alerts_when_history_empty():
     alerts = generate_alerts(
-        alert_name="DoubleDownAlert",
         alertstate_class=DoubleDownAlertState,
-        metric_name="x",
         metric_history_callback=lambda symbol: pd.DataFrame(),
         symbols=[DummySymbol("X")],
-        generate_alert_string=basic_alert_string_generator,
+        template=AlertToStringTemplate("", "", "x"),
         repo=MemoryAlertStateRepository("x"),
     )
     assert alerts is None
@@ -120,12 +116,10 @@ def test_repository_triggered_alert_not_to_trigger_again():
 
     # Set up arguments for `generate_alerts`:
     args = dict(
-        alert_name="DoubleDownAlert",
         alertstate_class=DoubleDownAlertState,
-        metric_name="Price",
         metric_history_callback=lambda symbol: df,
         symbols=[DummySymbol("EA")],
-        generate_alert_string=basic_alert_string_generator,
+        template=AlertToStringTemplate("", "", "Price"),
         repo=MemoryAlertStateRepository("x"),
     )
 

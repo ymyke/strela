@@ -14,15 +14,47 @@ class SymbolType(Protocol):
     name: str
 
 
+class AlertToStringTemplate:
+    def __init__(
+        self,
+        category_name: str,
+        alert_name: str,
+        metric_name: str,
+        link_pattern: str = "",
+    ):
+        self.category_name = category_name
+        self.alert_name = alert_name
+        self.metric_name = metric_name
+        self.link_pattern = link_pattern
+        # e.g. "https://www.google.com/search?q={symbol.name}+stock" FIXME add to doc
+
+    def get_title(self) -> str:
+        return f"📈🚨📉 {self.category_name} {self.metric_name} {self.alert_name}"
+
+    def apply(
+        self,
+        symbol: SymbolType,
+        alert_state: AlertState,
+        old_state: AlertState,
+        latest_value: float,
+    ) -> str:
+        return f"""{symbol.name} ⚠lert
+{alert_state.stringify(old_state).rstrip()}
+Latest {self.metric_name}: {latest_value}
+{self.link_pattern.format(symbol=symbol)}
+
+"""
+
+
 def generate_alerts(
-    alert_name: str,
     alertstate_class: Type[AlertState],
-    metric_name: str,
     metric_history_callback: Callable[[SymbolType], pd.DataFrame],
     symbols: List[SymbolType],
-    generate_alert_string: Callable,
+    template: AlertToStringTemplate,
     repo: AlertStateRepository,
-) -> Optional[str]: # FIXME Switch to returning list of all alert strings, empty list if none.
+) -> Optional[
+    str
+]:  # FIXME Switch to returning list of all alert strings, empty list if none.
     """Check list of symbols and return string with alerts. Returns `None` if no alerts
     are found.
     """
@@ -44,38 +76,10 @@ def generate_alerts(
         # Check if there was a change:
         if current_state.is_ringing() and not current_state.eq(old_state):
             repo.update_state(symbol.name, current_state)
-
-            alerts += generate_alert_string(
-                symbol,
-                current_state.stringify(old_state),
-                current_state.htmlify(old_state),
-                metric_name,
-                alert_name,
-                latest_value,
-            )
+            alerts += template.apply(symbol, current_state, old_state, latest_value)
         # FIXME Type issues w old_state
 
     return alerts or None
-
-
-def basic_alert_string_generator(
-    symbol: SymbolType,
-    alertstate_as_text: str,
-    _alertstate_as_html: str,
-    metric_name: str,
-    _alert_name: str,
-    latest_value: float,
-) -> str:
-    res = f"""{symbol.name} ⚠lert
-{alertstate_as_text.rstrip()}
-Latest {metric_name}: {latest_value}
-
-"""
-    try:
-        res += f"Strategy: {symbol.get_strategy_string()}\n"  # type: ignore
-    except AttributeError:
-        pass
-    return res
 
 
 # FIXME How would this integrate with the mailing alert?
