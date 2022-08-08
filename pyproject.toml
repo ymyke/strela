@@ -8,6 +8,7 @@ authors = ["ymyke <michael.naef@gmail.com>"]
 python = ">=3.7,<3.10"
 pandas = ">=1.4.3"
 yagmail = ">=0.15.280"
+keyring = ">=23"    # for yagmail
 # ^ FIXME Use productive package when ready
 tessa = {git = "https://github.com/ymyke/tessa.git", rev = "add-symbols"}
 python-slugify = ">=5.0.0"
