@@ -38,11 +38,11 @@ class AlertToStringTemplate:
         old_state: AlertState,
         latest_value: float,
     ) -> str:
-        return f"""{symbol.name} ⚠lert
+        return f"""\
+{symbol.name} ⚠lert
 {alert_state.stringify(old_state).rstrip()}
 Latest {self.metric_name}: {latest_value}
 {self.link_pattern.format(symbol=symbol)}
-
 """
 
 
