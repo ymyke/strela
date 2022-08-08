@@ -29,7 +29,8 @@ sc.load_yaml("c:/code/fignal/mysymbols.yaml")  # FIXME Where to configure this?
 crypto_symbols = [x for x in sc.symbols if x.watch and x.type_ == "crypto"]
 stockx_symbols = [x for x in sc.symbols if x.watch and x.type_ != "crypto"]
 
-# Blueprints for links to more information:
+# Blueprints for links to more information: 
+# # FIXME Could this be a tessa.symbol.Symbol concern?
 COINGECKO_URL = "https://www.coingecko.com/en/coins/{symbol.name}"
 GOOGLE_URL = "https://www.google.com/search?q={symbol.name}+stock"
 
