@@ -1,3 +1,12 @@
+# FIXME Need something like this?
+# FIXME Need a .bat script!?
+# This module can also be called from the shell.
+
+# - Shell invocation: python finalerts/alerts.py Fluctulerts P/E Or, if you want the
+#   environment to be set up: C:\code\prod\fignal\utils\run_script.bat `
+#     C:\code\prod\fignal\finalerts\alerts.py Fluctulerts Price
+# - Code invocation: run("DDAlerts", "Price")
+
 import datetime
 from tessa.symbol import SymbolCollection, ExtendedSymbol
 from strela.alert_generator import generate_alerts, AlertToStringTemplate, SymbolType
