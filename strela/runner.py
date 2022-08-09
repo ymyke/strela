@@ -1,7 +1,6 @@
 # FIXME Need something like this?
 # FIXME Need a .bat script!?
 # This module can also be called from the shell.
-
 # - Shell invocation: python finalerts/alerts.py Fluctulerts P/E Or, if you want the
 #   environment to be set up: C:\code\prod\fignal\utils\run_script.bat `
 #     C:\code\prod\fignal\finalerts\alerts.py Fluctulerts Price
@@ -19,9 +18,6 @@ from strela.alertstates import (
 )
 from strela import mailer
 
-# FIXME
-# - Check for None alerts and then don't send any
-# - What about the colors?
 
 # FIXME Add to config?
 NO_MAIL = False
@@ -30,23 +26,17 @@ FROM_EMAIL = "michael.naef@gmail.com"
 TO_EMAIL = FROM_EMAIL
 
 
-# FIXME
-# - switch from string to list in generate alerts
-# - "\n".join and "<br/>".join <- br necessary?
-
-
 class MyAlertToHtmlTemplate(AlertToHtmlTemplate):
     def apply(self, symbol: SymbolType, *args, **kwargs) -> str:
         res = super().apply(symbol, *args, **kwargs).rstrip()
         try:
-            # FIXME Add note re ExtendedSymbol and try etc...
+            # This assumes that the symbol being used is a `tessa.symbol.ExtendedSymbol`
+            # but the code works anyway thanks to the try-block:
             res += f"\nStrategy: {symbol.get_strategy_string()}\n"  # type: ignore
         except AttributeError:
             pass
         return res
 
-
-# FIXME Have a templates.py with the basic_alert_string_generator and similar?
 
 # Prepare the symbol lists:
 sc = SymbolCollection(symbol_class=ExtendedSymbol)
@@ -55,7 +45,7 @@ crypto_symbols = [x for x in sc.symbols if x.watch and x.type_ == "crypto"]
 stockx_symbols = [x for x in sc.symbols if x.watch and x.type_ != "crypto"]
 
 # Blueprints for links to more information:
-# # FIXME Could this be a tessa.symbol.Symbol concern?
+# FIXME Could this be a tessa.symbol.Symbol concern?
 COINGECKO_URL = "https://www.coingecko.com/en/coins/{symbol.name}"
 GOOGLE_URL = "https://www.google.com/search?q={symbol.name}+stock"
 
