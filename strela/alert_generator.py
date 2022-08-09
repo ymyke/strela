@@ -57,6 +57,23 @@ def generate_alerts(
 ]:  # FIXME Switch to returning list of all alert strings, empty list if none.
     """Check list of symbols and return string with alerts. Returns `None` if no alerts
     are found.
+
+    FIXME
+    - metricname: The name of the metric this alert is based on (e.g., "Price")
+    - alertname: The name of the alert itself (e.g., "Fluctulert") (Note that the
+      alertname and metricname are combined and used to derive the filename for the
+      shelf. So make sure it is unique and consistent.)
+    - symbols: The list of symbols to be watched.
+    - alertstate_class: AlertState subclass to be used to track state and determine
+      whether an alert has triggered
+    - get_metrichistory_callback: Callback that returns historic data for that symbol
+      and metric as a dataframe with timestamps as an index and one column with the
+      metric
+    - altertstitle_callback: Callback that takes a symbol and returns a string with this
+      symbol's title in the alerts result string
+    - comments_callback: Callback that takes a symbol and returns a string that will be
+      displayed after an alert.
+
     """
     repo.backup()  # FIXME Do this outside?
     alerts = ""
