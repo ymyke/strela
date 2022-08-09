@@ -9,6 +9,7 @@ build your own runner.
 
 # FIXME Rename to runner-ymyke.py or similar?
 # FIXME Mention keyring and the options to set password.
+# FIXME Use keyring for mail address?
 # FIXME Need something like this?
 # FIXME Need a .bat script!?
 # This module can also be called from the shell.
