@@ -1,3 +1,14 @@
+"""runner -- This file orchestrates all the building blocks to create and send alerts.
+
+It is intended to be run from a cron job or similar service (e.g., Windows Task
+Scheduler). FIXME Add more notes here once the FIXMEs below are resolved.
+
+This file is customized for my requirements and environment. Use it as a blueprint to
+build your own runner.
+"""
+
+# FIXME Rename to runner-ymyke.py or similar?
+# FIXME Mention keyring and the options to set password.
 # FIXME Need something like this?
 # FIXME Need a .bat script!?
 # This module can also be called from the shell.
@@ -23,10 +34,11 @@ from strela import mailer
 SYMBOLS_FILE = "c:/code/fignal/mysymbols.yaml"
 NO_MAIL = False
 ENABLE_ALL_DOWS = False
-FROM_EMAIL = "michael.naef@gmail.com"
+FROM_EMAIL = "michael.naef@gmail.com"  # FIXME Remove my mail address
 TO_EMAIL = FROM_EMAIL
 
 
+# Customized template derived from default HTML template:
 class MyAlertToHtmlTemplate(AlertToHtmlTemplate):
     """Subclass that adds strategy information to an alert. Requires symbol to be of
     type `tessa.symbol.ExtendedSymbol`."""
@@ -108,7 +120,7 @@ for (
     repo = AlertStateRepository(f"{category_name}-{METRIC}-{alert_name}")
     alerts = generate_alerts(
         alertstate_class=alert_class,
-        metric_history_callback=lambda symbol: symbol.price_history().df,
+        metric_history_callback=lambda symbl: symbl.price_history().df,  # type: ignore
         symbols=symbols,
         template=template,
         repo=repo,
