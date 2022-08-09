@@ -80,20 +80,3 @@ def generate_alerts(
         # FIXME Type issues w old_state
 
     return alerts or None
-
-
-# FIXME How would this integrate with the mailing alert?
-
-# FIXME What to do with this?
-# # Set the title callback:
-# if tickerlistname == "Cryptotickers":
-#     alertstitle_callback = lambda ticker: (
-#         f'<a href="https://www.coingecko.com/en/coins/'
-#         f'{api.coingecko.symbol_to_id(ticker)}">'
-#         f"{ticker} ⚠lert</a>"
-#     )
-# else:
-#     alertstitle_callback = lambda ticker: (
-#         f'<a href="https://www.google.com/search?q='
-#         f'{ticker}+stock">{ticker} ⚠lert</a>'
-#     )
