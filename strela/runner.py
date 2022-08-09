@@ -28,15 +28,14 @@ TO_EMAIL = FROM_EMAIL
 
 
 class MyAlertToHtmlTemplate(AlertToHtmlTemplate):
+    """Subclass that adds strategy information to an alert. Requires symbol to be of
+    type `tessa.symbol.ExtendedSymbol`."""
+
     def apply(self, symbol: SymbolType, *args, **kwargs) -> str:
-        res = super().apply(symbol, *args, **kwargs).rstrip()
-        try:
-            # This assumes that the symbol being used is a `tessa.symbol.ExtendedSymbol`
-            # but the code works anyway thanks to the try-block:
-            res += f"\nStrategy: {symbol.get_strategy_string()}\n"  # type: ignore
-        except AttributeError:
-            pass
-        return res
+        return (
+            super().apply(symbol, *args, **kwargs).rstrip()
+            + f"\nStrategy: {symbol.get_strategy_string()}\n"  # type: ignore
+        )
 
 
 # Prepare the symbol lists:
