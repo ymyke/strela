@@ -1,4 +1,4 @@
-"""runner -- This file orchestrates all the building blocks to create and send alerts.
+"""Orchestrate all the building blocks to create and send alerts.
 
 It is intended to be run from a cron job or similar service (e.g., Windows Task
 Scheduler). FIXME Add more notes here once the FIXMEs below are resolved.
