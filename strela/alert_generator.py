@@ -1,7 +1,6 @@
 from typing import Callable, Optional, List, Type
 import pandas as pd
-from strela.alertstates.alertstaterepository import AlertStateRepository
-from strela.alertstates import AlertState
+from strela.alertstates import AlertState, AlertStateRepository
 from strela.symboltype import SymbolType
 
 
