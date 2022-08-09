@@ -25,6 +25,7 @@ from strela import mailer
 
 # FIXME Add to config?
 NO_MAIL = False
+ENABLE_ALL_DOWS = False
 FROM_EMAIL = "michael.naef@gmail.com"
 TO_EMAIL = FROM_EMAIL
 
@@ -111,7 +112,7 @@ for (
     dayofweeks,
     link_pattern,
 ) in the_alert_list:
-    if datetime.datetime.today().weekday() not in dayofweeks:
+    if datetime.datetime.today().weekday() not in dayofweeks and not ENABLE_ALL_DOWS:
         continue
     template = MyAlertToHtmlTemplate(category_name, alert_name, METRIC, link_pattern)
     repo = AlertStateRepository(f"{category_name}-{METRIC}-{alert_name}")
