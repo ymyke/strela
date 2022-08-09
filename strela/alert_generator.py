@@ -1,17 +1,8 @@
-from typing import Callable, Optional, Protocol, List, Type
+from typing import Callable, Optional, List, Type
 import pandas as pd
 from strela.alertstates.alertstaterepository import AlertStateRepository
 from strela.alertstates import AlertState
-
-
-class SymbolType(Protocol):
-    """Symbol interface for the FinAlert class. A symbol needs at least a name and all
-    the information necessary so the callbacks can do their work.
-
-    You can use `tessa.symbol.Symbol` where a `SymbolType` is expected.
-    """
-
-    name: str
+from strela.symboltype import SymbolType
 
 
 class AlertToStringTemplate:

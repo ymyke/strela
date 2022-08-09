@@ -9,7 +9,8 @@
 
 import datetime
 from tessa.symbol import SymbolCollection, ExtendedSymbol
-from strela.alert_generator import generate_alerts, AlertToStringTemplate, SymbolType
+from strela.alert_generator import generate_alerts, AlertToStringTemplate
+from strela.symboltype import SymbolType
 from strela.alertstates import (
     AlertStateRepository,
     AlertState,
