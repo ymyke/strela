@@ -20,6 +20,7 @@ from strela import mailer
 
 
 # FIXME Add to config?
+SYMBOLS_FILE = "c:/code/fignal/mysymbols.yaml"
 NO_MAIL = False
 ENABLE_ALL_DOWS = False
 FROM_EMAIL = "michael.naef@gmail.com"
@@ -40,7 +41,7 @@ class MyAlertToHtmlTemplate(AlertToHtmlTemplate):
 
 # Prepare the symbol lists:
 sc = SymbolCollection(symbol_class=ExtendedSymbol)
-sc.load_yaml("c:/code/fignal/mysymbols.yaml")  # FIXME Where to configure this?
+sc.load_yaml(SYMBOLS_FILE)
 crypto_symbols = [x for x in sc.symbols if x.watch and x.type_ == "crypto"]
 stockx_symbols = [x for x in sc.symbols if x.watch and x.type_ != "crypto"]
 
