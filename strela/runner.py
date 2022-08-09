@@ -9,11 +9,11 @@
 
 import datetime
 from tessa.symbol import SymbolCollection, ExtendedSymbol
-from strela.alert_generator import generate_alerts, AlertToStringTemplate
+from strela.alert_generator import generate_alerts
 from strela.symboltype import SymbolType
+from strela.templates import AlertToHtmlTemplate
 from strela.alertstates import (
     AlertStateRepository,
-    AlertState,
     DoubleDownAlertState,
     FluctulertState,
 )
@@ -27,28 +27,6 @@ from strela import mailer
 NO_MAIL = False
 FROM_EMAIL = "michael.naef@gmail.com"
 TO_EMAIL = FROM_EMAIL
-
-
-class AlertToHtmlTemplate(AlertToStringTemplate):
-    def apply(
-        self,
-        symbol: SymbolType,
-        alert_state: AlertState,
-        old_state: AlertState,
-        latest_value: float,
-    ) -> str:
-        return f"""\
-<a href="{self.link_pattern.format(symbol=symbol)}">{symbol.name} ⚠lert</a>
-{alert_state.htmlify(old_state).rstrip()}
-Latest {self.metric_name}: {latest_value}
-"""
-
-    def wrap_body(self, body: str) -> str:
-        return f"""\
-<pre><font face="Consolas, Lucida Console, Fira Code, Courier New, Courier, monospace">
-{body}
-</font></pre>
-"""
 
 
 # FIXME
