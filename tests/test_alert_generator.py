@@ -71,7 +71,7 @@ def test_generate_fluctulerts(df_changes, pattern):
     # ^ FIXME Have one common args dict to use in all tests and just overwrite the
     # attributes that need to be overwritten?
     if pattern:
-        assert re.search(pattern, alerts, re.S)
+        assert re.search(pattern, "".join(alerts), re.S)
     else:
         assert not alerts
 
@@ -89,7 +89,7 @@ def test_generate_doubledown_alerts():
         template=AlertToStringTemplate("", "", "Price"),
         repo=MemoryAlertStateRepository("x"),
     )
-    assert re.search("10×", alerts, re.S)
+    assert re.search("10×", "".join(alerts), re.S)
 
 
 def test_generate_no_alerts_when_history_empty():
@@ -100,7 +100,7 @@ def test_generate_no_alerts_when_history_empty():
         template=AlertToStringTemplate("", "", "x"),
         repo=MemoryAlertStateRepository("x"),
     )
-    assert alerts is None
+    assert not alerts
 
 
 def test_repository_triggered_alert_not_to_trigger_again():
@@ -125,11 +125,11 @@ def test_repository_triggered_alert_not_to_trigger_again():
 
     # First call of generate_alerts should create alert for EA:
     alerts = generate_alerts(**args)
-    assert "EA" in alerts
+    assert "EA" in "".join(alerts)
 
     # Second call with the same setup should not create an alert:
     alerts = generate_alerts(**args)
-    assert alerts is None
+    assert not alerts
 
     # Third call, after changing the price history significantly, should produce an
     # alert again:
@@ -137,4 +137,4 @@ def test_repository_triggered_alert_not_to_trigger_again():
     df.loc["2020-08-01", "close"] = 0.5
     args["metric_history_callback"] = lambda symbol: df
     alerts = generate_alerts(**args)
-    assert "EA" in alerts
+    assert "EA" in "".join(alerts)

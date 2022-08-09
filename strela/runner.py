@@ -122,12 +122,13 @@ for (
         template=template,
         repo=repo,
     )
+    alerts_str = "\n".join(alerts)  # pylint: disable=invalid-name
     if NO_MAIL:
-        print(template.get_title() + "\n" + alerts)
-    else:
+        print(template.get_title() + "\n" + alerts_str)
+    elif alerts:
         mailer.mail(
             from_=FROM_EMAIL,
             to_=TO_EMAIL,
             subject=template.get_title(),
-            body=template.wrap_body(alerts),
+            body=template.wrap_body(alerts_str),
         )

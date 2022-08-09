@@ -1,4 +1,4 @@
-from typing import Callable, Optional, List, Type
+from typing import Callable, List, Type
 import pandas as pd
 from strela.alertstates import AlertState, AlertStateRepository
 from strela.symboltype import SymbolType
@@ -11,9 +11,7 @@ def generate_alerts(
     symbols: List[SymbolType],
     template: AlertToStringTemplate,
     repo: AlertStateRepository,
-) -> Optional[
-    str
-]:  # FIXME Switch to returning list of all alert strings, empty list if none.
+) -> list[str]:
     """Check list of symbols and return string with alerts. Returns `None` if no alerts
     are found.
 
@@ -35,7 +33,7 @@ def generate_alerts(
 
     """
     repo.backup()  # FIXME Do this outside?
-    alerts = ""
+    alerts = []
     for symbol in symbols:
         # Get metric history:
         hist = metric_history_callback(symbol)
@@ -52,7 +50,9 @@ def generate_alerts(
         # Check if there was a change:
         if current_state.is_ringing() and not current_state.eq(old_state):
             repo.update_state(symbol.name, current_state)
-            alerts += template.apply(symbol, current_state, old_state, latest_value)
+            alerts.append(
+                template.apply(symbol, current_state, old_state, latest_value)
+            )
         # FIXME Type issues w old_state
 
-    return alerts or None
+    return alerts
