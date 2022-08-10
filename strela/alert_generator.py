@@ -1,3 +1,5 @@
+"""Central function to analyze symbols and create alerts."""
+
 from typing import Callable, List, Type
 import pandas as pd
 from strela.alertstates import AlertState, AlertStateRepository
@@ -12,25 +14,21 @@ def generate_alerts(
     template: AlertToTextTemplate,
     repo: AlertStateRepository,
 ) -> list[str]:
-    """Check list of symbols and return string with alerts. Returns `None` if no alerts
-    are found.
+    """Check list of symbols and return a list of alert strings. Returns empty list if
+    no alerts are found.
 
-    FIXME
-    - metricname: The name of the metric this alert is based on (e.g., "Price")
-    - alertname: The name of the alert itself (e.g., "Fluctulert") (Note that the
-      alertname and metricname are combined and used to derive the filename for the
-      shelf. So make sure it is unique and consistent.)
-    - symbols: The list of symbols to be watched.
-    - alertstate_class: AlertState subclass to be used to track state and determine
-      whether an alert has triggered
+    Args:
+    - alertstate_class: `strela.alertstates.AlertState` subclass to be used to track
+      state and determine whether an alert has been triggered.
     - get_metrichistory_callback: Callback that returns historic data for that symbol
-      and metric as a dataframe with timestamps as an index and one column with the
-      metric
-    - altertstitle_callback: Callback that takes a symbol and returns a string with this
-      symbol's title in the alerts result string
-    - comments_callback: Callback that takes a symbol and returns a string that will be
-      displayed after an alert.
+      and the metric under observation as a dataframe. The dataframe must have
+      timestamps as the index and exactly one column with the metric
+    - symbols: The list of symbols to be analyzed.
+    - template: The template to use to generate the alert text.
+    - repo: The repo to use to retrieve and store the state of alerts.
 
+    Note that this function is kept very generic so you can plug in your own building
+    blocks.
     """
     repo.backup()  # FIXME Do this outside?
     alerts = []
