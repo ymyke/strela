@@ -1,22 +1,25 @@
 """Orchestrate all the building blocks to create and send alerts.
 
-It is intended to be run from a cron job or similar service (e.g., Windows Task
-Scheduler). FIXME Add more notes here once the FIXMEs below are resolved.
+The script in here is customized for my requirements and environment. Use it as a
+blueprint to build your own runner.
 
-This file is customized for my requirements and environment. Use it as a blueprint to
-build your own runner.
+It is intended to be run from a cron job or similar service (e.g., Windows Task
+Scheduler). The way this script is set up, you can simply run it once a day and it'll
+only run the alerts that are supposed to run on a given weekday.
+
+Use something like this Powershell script to set up your virtual environment and run the
+script:
+
+```powershell
+cd <project-root>
+. ./.venv/Scripts/Activate.ps1
+python strela/runner.py
+```
 """
 
 # FIXME Rename to runner-ymyke.py or similar?
 # FIXME Mention keyring and the options to set password.
 # FIXME Use keyring for mail address?
-# FIXME Need something like this?
-# FIXME Need a .bat script!?
-# This module can also be called from the shell.
-# - Shell invocation: python finalerts/alerts.py Fluctulerts P/E Or, if you want the
-#   environment to be set up: C:\code\prod\fignal\utils\run_script.bat `
-#     C:\code\prod\fignal\finalerts\alerts.py Fluctulerts Price
-# - Code invocation: run("DDAlerts", "Price")
 
 import datetime
 from tessa.symbol import SymbolCollection, ExtendedSymbol
