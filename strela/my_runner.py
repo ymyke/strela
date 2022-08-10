@@ -17,8 +17,6 @@ python strela/runner.py
 ```
 """
 
-# FIXME Mention keyring and the options to set password.
-# FIXME Use keyring for mail address?
 
 import datetime
 from tessa.symbol import SymbolCollection, ExtendedSymbol
