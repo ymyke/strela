@@ -30,7 +30,7 @@ def generate_alerts(
     Note that this function is kept very generic so you can plug in your own building
     blocks.
     """
-    repo.backup()  # FIXME Do this outside?
+    repo.backup()
     alerts = []
     for symbol in symbols:
         # Get metric history:
