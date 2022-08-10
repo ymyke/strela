@@ -17,8 +17,8 @@ class AlertState(ABC):
         """Mandatory init method that takes a history dataframe."""
 
     @abstractmethod
-    def stringify(self, other: AlertState = None) -> str:
-        """Return state as a string. Highlight differences to other if not None. Returns
+    def textify(self, other: AlertState = None) -> str:
+        """Return state as a text. Highlight differences to other if not None. Returns
         an empty string if nothing happened that would trigger an alert.
         """
 
@@ -37,4 +37,4 @@ class AlertState(ABC):
         """
 
     def __str__(self) -> str:
-        return self.stringify()
+        return self.textify()

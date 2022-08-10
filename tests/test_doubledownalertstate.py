@@ -25,7 +25,7 @@ def test_init_without_active_alert():
     assert a.currentlevel is None
     assert not a.alertactivated
     assert not a.is_ringing()
-    assert a.stringify() == "" == a.htmlify()
+    assert a.textify() == "" == a.htmlify()
     assert a.alerthistory == [
         (
             np.datetime64("2020-02-28T00:00:00.000000000"),
@@ -47,7 +47,7 @@ def test_init_with_active_alert():
     assert a.alertactivated
     assert a.is_ringing()
     assert a.currentlevel == a.levels[1]
-    assert a.stringify() == "20% down! → 4× invest!?\n" == a.htmlify()
+    assert a.textify() == "20% down! → 4× invest!?\n" == a.htmlify()
     # FIXME I guess the an alert's output should be configurable?
 
 

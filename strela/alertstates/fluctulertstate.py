@@ -104,8 +104,8 @@ class FluctulertState(AlertState):
             for period, trigger in self._period_trigger_config
         ]
 
-    def stringify(self, other: FluctulertState = None) -> str:
-        """Return all stats as a string. Returns an empty string if there are no stats,
+    def textify(self, other: FluctulertState = None) -> str:
+        """Return all stats as a text. Returns an empty string if there are no stats,
         i.e., if nothing happened that would trigger a trigger.
         """
         s = ""
@@ -127,13 +127,13 @@ class FluctulertState(AlertState):
 
     def htmlify(self, other: FluctulertState = None) -> str:
         """Return stats as html. Returns empty string if there are no alerts."""
-        html = self.stringify(other)
+        html = self.textify(other)
         html = re.sub(r"(↑↑↑)", r'<font color="green">\1</font>', html)
         html = re.sub(r"(↓↓↓)", r'<font color="red">\1</font>', html)
         return html
 
     def is_ringing(self) -> bool:
-        return self.stringify() != ""
+        return self.textify() != ""
 
     def eq(self, other: FluctulertState) -> bool:
         """Check for equality of this PeriodStat and other."""

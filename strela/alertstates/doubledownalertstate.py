@@ -101,7 +101,7 @@ class DoubleDownAlertState(AlertState):
     def is_ringing(self) -> bool:
         return self.alertactivated
 
-    def stringify(self, other: DoubleDownAlertState = None) -> str:
+    def textify(self, other: DoubleDownAlertState = None) -> str:
         if not self.currentlevel:
             return ""
         return (
@@ -110,7 +110,7 @@ class DoubleDownAlertState(AlertState):
         )
 
     def htmlify(self, other: DoubleDownAlertState = None) -> str:
-        return self.stringify(other)
+        return self.textify(other)
 
     def eq(self, other: DoubleDownAlertState) -> bool:
         return other is not None and self.currentlevel == other.currentlevel

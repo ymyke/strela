@@ -120,7 +120,7 @@ def test_fluctulertstate_eq_different(fs1, fs2):
     assert not fs1.eq(fs2)
 
 
-def test_stringify(fs2):
+def test_textify(fs2):
     # pylint: disable=trailing-whitespace
     targetstring = """  3d · ↑↑↑ 100% ·        
   6d · ↑↑↑ 100% ·        
@@ -131,6 +131,6 @@ def test_stringify(fs2):
 180d · ↑↑↑ 100% · ↓↓↓ 75%
 360d · ↑↑↑ 100% · ↓↓↓ 75%
 """
-    assert fs2.stringify() == targetstring
+    assert fs2.textify() == targetstring
     # FIXME What if the format is configurable at some point in the future? E.g., with a
     # template.

@@ -5,7 +5,7 @@ from strela.alertstates import AlertState
 # FIXME Add documentation
 
 
-class AlertToStringTemplate:
+class AlertToTextTemplate:
     def __init__(
         self,
         category_name: str,
@@ -31,13 +31,13 @@ class AlertToStringTemplate:
     ) -> str:
         return f"""\
 {symbol.name} ⚠lert
-{alert_state.stringify(old_state).rstrip()}
+{alert_state.textify(old_state).rstrip()}
 Latest {self.metric_name}: {latest_value}
 {self.link_pattern.format(symbol=symbol)}
 """
 
 
-class AlertToHtmlTemplate(AlertToStringTemplate):
+class AlertToHtmlTemplate(AlertToTextTemplate):
     def apply(
         self,
         symbol: SymbolType,

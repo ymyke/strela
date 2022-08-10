@@ -6,7 +6,8 @@ from dataclasses import dataclass
 import re
 import pytest
 import pandas as pd
-from strela.alert_generator import generate_alerts, AlertToStringTemplate
+from strela.alert_generator import generate_alerts
+from strela.templates import AlertToTextTemplate
 from strela.alertstates import (
     FluctulertState,
     DoubleDownAlertState,
@@ -63,7 +64,7 @@ def test_generate_fluctulerts(df_changes, pattern):
         alertstate_class=FluctulertState,
         metric_history_callback=lambda symbol: df,
         symbols=[DummySymbol("EA")],
-        template=AlertToStringTemplate("", "", "Price"),
+        template=AlertToTextTemplate("", "", "Price"),
         # FIXME Also test categoryname and alertname? Or better have specific tests for
         # the template.
         repo=MemoryAlertStateRepository("x"),
@@ -86,7 +87,7 @@ def test_generate_doubledown_alerts():
         alertstate_class=DoubleDownAlertState,
         metric_history_callback=lambda symbol: df,
         symbols=[DummySymbol("X")],
-        template=AlertToStringTemplate("", "", "Price"),
+        template=AlertToTextTemplate("", "", "Price"),
         repo=MemoryAlertStateRepository("x"),
     )
     assert re.search("10×", "".join(alerts), re.S)
@@ -97,7 +98,7 @@ def test_generate_no_alerts_when_history_empty():
         alertstate_class=DoubleDownAlertState,
         metric_history_callback=lambda symbol: pd.DataFrame(),
         symbols=[DummySymbol("X")],
-        template=AlertToStringTemplate("", "", "x"),
+        template=AlertToTextTemplate("", "", "x"),
         repo=MemoryAlertStateRepository("x"),
     )
     assert not alerts
@@ -119,7 +120,7 @@ def test_repository_triggered_alert_not_to_trigger_again():
         alertstate_class=DoubleDownAlertState,
         metric_history_callback=lambda symbol: df,
         symbols=[DummySymbol("EA")],
-        template=AlertToStringTemplate("", "", "Price"),
+        template=AlertToTextTemplate("", "", "Price"),
         repo=MemoryAlertStateRepository("x"),
     )
 
