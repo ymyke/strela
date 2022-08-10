@@ -10,8 +10,6 @@ import strela.my_runner as runner
 from .alertstates.test_alertstaterepository import patch_shelveloc
 from .helpers import create_metric_history_df
 
-# FIXME Rename according to name of runner in the end.
-
 
 @pytest.fixture(name="prepare_environment")
 def fixture_prepare_environment(tmp_path):
@@ -52,7 +50,7 @@ def test_price_run(mocker, prepare_environment):
     assert "testcryptosymbolname" in str(yagmail.SMTP().send.call_args)
 
 
-@pytest.mark.net  # FIXME Register somewhere
+@pytest.mark.net
 def test_mailingalert_mail_real(prepare_environment):
     """This will send mail to user."""
     runner.run()
