@@ -17,7 +17,6 @@ python strela/runner.py
 ```
 """
 
-# FIXME Rename to runner-ymyke.py or similar?
 # FIXME Mention keyring and the options to set password.
 # FIXME Use keyring for mail address?
 
@@ -32,14 +31,8 @@ from strela.alertstates import (
     FluctulertState,
 )
 from strela import mailer
+from strela import config
 
-
-# FIXME Add to config?
-SYMBOLS_FILE = "c:/code/fignal/mysymbols.yaml"
-NO_MAIL = False
-ENABLE_ALL_DOWS = False
-FROM_EMAIL = "michael.naef@gmail.com"  # FIXME Remove my mail address
-TO_EMAIL = FROM_EMAIL
 
 # Blueprints for links to more information:
 # FIXME Could this be a tessa.symbol.Symbol concern?
@@ -64,7 +57,7 @@ def run() -> None:
 
     # Prepare the symbol lists:
     scoll = SymbolCollection(symbol_class=ExtendedSymbol)
-    scoll.load_yaml(SYMBOLS_FILE)
+    scoll.load_yaml(config.SYMBOLS_FILE)
     crypto_symbols = [x for x in scoll.symbols if x.watch and x.type_ == "crypto"]
     stockx_symbols = [x for x in scoll.symbols if x.watch and x.type_ != "crypto"]
 
@@ -122,7 +115,7 @@ def run() -> None:
     ) in the_alert_list:
         if (
             datetime.datetime.today().weekday() not in dayofweeks
-            and not ENABLE_ALL_DOWS
+            and not config.ENABLE_ALL_DOWS
         ):
             continue
         template = MyAlertToHtmlTemplate(
@@ -137,12 +130,11 @@ def run() -> None:
             repo=repo,
         )
         alerts_str = "\n".join(alerts)  # pylint: disable=invalid-name
-        if NO_MAIL:
+        if config.NO_MAIL:
             print(template.get_title() + "\n" + alerts_str)
         elif alerts:
             mailer.mail(
-                from_=FROM_EMAIL,
-                to_=TO_EMAIL,
+                to_address=config.MAIL_TO_ADDRESS,
                 subject=template.get_title(),
                 body=template.wrap_body(alerts_str),
             )

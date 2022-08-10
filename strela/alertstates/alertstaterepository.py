@@ -7,6 +7,7 @@ import os
 import shelve
 import slugify
 from . import AlertState
+from strela import config
 
 
 class AlertStateRepository:
@@ -18,11 +19,10 @@ class AlertStateRepository:
     future.
     """
 
-    _FOLDER = "c:/code/strela/data/"  # FIXME Make configurable
+    _FOLDER = config.ALERT_REPOSITORY_FOLDER
     _BACKUPFOLDER = os.path.join(_FOLDER, "backups")
 
     def __init__(self, filename: str):
-        # self.filename = slugify.slugify(self.metricname + "-" + self.alertname)
         self.filename = slugify.slugify(filename)
         self._fullpath = os.path.join(self._FOLDER, self.filename)
 

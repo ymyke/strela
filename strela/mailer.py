@@ -1,20 +1,16 @@
 """Simple adapter to yagmail."""
 
 import yagmail
+from strela import config
 
-# pylint: disable=bare-except, raise-missing-from
 
-
-def mail(from_: str, to_: str, subject: str, body: str) -> None:
-    """Send an email."""
-
-    args = dict(to=to_, subject=subject, contents=body)
+def mail(to_address: str, subject: str, body: str) -> None:
+    """Send an email. Note that the from-address is hardcoded and taken from the
+    config.
+    """
     try:
-        # Try with the mail address only; this will look for a password in the keyring:
-        yagmail.SMTP(from_).send(**args)
-    except:
-        try:
-            # If that failed, try with email address and password:
-            yagmail.SMTP(from_, "").send(**args)  # FIXME Need password
-        except:
-            raise RuntimeError("Cannot send mail.")
+        yagmail.SMTP(config.MAIL_FROM_ADDRESS, config.MAIL_PASSWORD).send(
+            to=to_address, subject=subject, contents=body
+        )
+    except Exception as exc:
+        raise RuntimeError("Cannot send mail.") from exc

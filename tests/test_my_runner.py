@@ -5,14 +5,12 @@
 import pytest
 import yagmail
 from tessa.price import PriceHistory
+from strela import config
 import strela.my_runner as runner
 from .alertstates.test_alertstaterepository import patch_shelveloc
 from .helpers import create_metric_history_df
 
 # FIXME Rename according to name of runner in the end.
-
-TEST_EMAIL = "983409832498348938@mailinator.com"
-# FIXME Use user's mail address once we have proper config in place?
 
 
 @pytest.fixture(name="prepare_environment")
@@ -21,7 +19,7 @@ def fixture_prepare_environment(tmp_path):
     file = tmp_path / "symbols.yaml"
     file.write_text(
         """\
-gmi:
+testcryptosymbolname:
   type_: crypto
   query: bankless-defi-innovation-index
   strategy: [HoldForGrowth, HoldForDiversification]
@@ -29,9 +27,9 @@ gmi:
   jurisdiction: unknown
 """
     )
-    runner.SYMBOLS_FILE = file
-    runner.ENABLE_ALL_DOWS = True
-    runner.TO_EMAIL = TEST_EMAIL
+    config.SYMBOLS_FILE = file
+    config.ENABLE_ALL_DOWS = True
+    config.MAIL_TO_ADDRESS = config.MAIL_TEST_TO_ADDRESS
 
 
 def test_price_run(mocker, prepare_environment):
@@ -47,16 +45,14 @@ def test_price_run(mocker, prepare_environment):
     # Check:
     yagmail.SMTP.assert_called()  # type: ignore
     yagmail.SMTP().send.assert_any_call(
-        to=TEST_EMAIL,
+        to=config.MAIL_TEST_TO_ADDRESS,
         subject="📈🚨📉 Crypto Price Fluctulert",
         contents=mocker.ANY,
     )
-    assert "gmi" in str(yagmail.SMTP().send.call_args)
+    assert "testcryptosymbolname" in str(yagmail.SMTP().send.call_args)
 
 
 @pytest.mark.net  # FIXME Register somewhere
 def test_mailingalert_mail_real(prepare_environment):
-    """Will send mail to `TEST_EMAIL` address at mailinator.com. You can verify the
-    arrival of the mail there.
-    """
+    """This will send mail to user."""
     runner.run()

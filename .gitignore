@@ -5,3 +5,4 @@ data/
 poetry.lock
 settings.json
 http_cache.sqlite
+my_config.py
