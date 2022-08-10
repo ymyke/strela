@@ -86,7 +86,7 @@ class FluctulertState(AlertState):
 
     stats = []
 
-    _period_trigger_config = [
+    _period_trigger_config = [  # FIXME Should this be configurable?
         (3, 0.05),
         (6, 0.07),
         (14, 0.1),
