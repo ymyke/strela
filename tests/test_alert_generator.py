@@ -11,7 +11,7 @@ from strela.templates import AlertToTextTemplate
 from strela.alertstates import (
     FluctulertState,
     DoubleDownAlertState,
-    MemoryAlertStateRepository,
+    BaseAlertStateRepository,
 )
 from .helpers import create_metric_history_df
 
@@ -67,7 +67,7 @@ def test_generate_fluctulerts(df_changes, pattern):
         template=AlertToTextTemplate("", "", "Price"),
         # FIXME Also test categoryname and alertname? Or better have specific tests for
         # the template.
-        repo=MemoryAlertStateRepository("x"),
+        repo=BaseAlertStateRepository("x"),
     )
     # ^ FIXME Have one common args dict to use in all tests and just overwrite the
     # attributes that need to be overwritten?
@@ -88,7 +88,7 @@ def test_generate_doubledown_alerts():
         metric_history_callback=lambda symbol: df,
         symbols=[DummySymbol("X")],
         template=AlertToTextTemplate("", "", "Price"),
-        repo=MemoryAlertStateRepository("x"),
+        repo=BaseAlertStateRepository("x"),
     )
     assert re.search("10×", "".join(alerts), re.S)
 
@@ -99,7 +99,7 @@ def test_generate_no_alerts_when_history_empty():
         metric_history_callback=lambda symbol: pd.DataFrame(),
         symbols=[DummySymbol("X")],
         template=AlertToTextTemplate("", "", "x"),
-        repo=MemoryAlertStateRepository("x"),
+        repo=BaseAlertStateRepository("x"),
     )
     assert not alerts
 
@@ -121,7 +121,7 @@ def test_repository_triggered_alert_not_to_trigger_again():
         metric_history_callback=lambda symbol: df,
         symbols=[DummySymbol("EA")],
         template=AlertToTextTemplate("", "", "Price"),
-        repo=MemoryAlertStateRepository("x"),
+        repo=BaseAlertStateRepository("x"),
     )
 
     # First call of generate_alerts should create alert for EA:
