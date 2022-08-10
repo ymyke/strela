@@ -6,8 +6,8 @@ from typing import Optional
 import os
 import shelve
 import slugify
-from . import AlertState
 from strela import config
+from . import AlertState
 
 
 class AlertStateRepository:
