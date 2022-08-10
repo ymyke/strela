@@ -1,4 +1,5 @@
 from __future__ import annotations
+from typing import Optional
 from dataclasses import InitVar, dataclass, field
 import re
 from pandas import DataFrame
@@ -104,7 +105,7 @@ class FluctulertState(AlertState):
             for period, trigger in self._period_trigger_config
         ]
 
-    def textify(self, other: FluctulertState = None) -> str:
+    def textify(self, other: Optional[FluctulertState] = None) -> str:
         """Return all stats as a text. Returns an empty string if there are no stats,
         i.e., if nothing happened that would trigger a trigger.
         """
@@ -125,7 +126,7 @@ class FluctulertState(AlertState):
             return ""
         return s
 
-    def htmlify(self, other: FluctulertState = None) -> str:
+    def htmlify(self, other: Optional[FluctulertState] = None) -> str:
         """Return stats as html. Returns empty string if there are no alerts."""
         html = self.textify(other)
         html = re.sub(r"(↑↑↑)", r'<font color="green">\1</font>', html)
@@ -135,7 +136,7 @@ class FluctulertState(AlertState):
     def is_ringing(self) -> bool:
         return self.textify() != ""
 
-    def eq(self, other: FluctulertState) -> bool:
+    def eq(self, other: Optional[FluctulertState]) -> bool:
         """Check for equality of this PeriodStat and other."""
         return other is not None and all(
             a.eq(b) for a, b in zip(self.stats, other.stats)

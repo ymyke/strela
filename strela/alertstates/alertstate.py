@@ -1,6 +1,7 @@
 """FIXME"""
 
 from __future__ import annotations
+from typing import Optional
 from abc import ABC, abstractmethod
 from pandas import DataFrame
 
@@ -17,17 +18,17 @@ class AlertState(ABC):
         """Mandatory init method that takes a history dataframe."""
 
     @abstractmethod
-    def textify(self, other: AlertState = None) -> str:
+    def textify(self, other: Optional[AlertState] = None) -> str:
         """Return state as a text. Highlight differences to other if not None. Returns
         an empty string if nothing happened that would trigger an alert.
         """
 
     @abstractmethod
-    def htmlify(self, other: AlertState = None) -> str:
+    def htmlify(self, other: Optional[AlertState] = None) -> str:
         """Return state as html. Returns empty string if there are no alerts."""
 
     @abstractmethod
-    def eq(self, other: AlertState) -> bool:
+    def eq(self, other: Optional[AlertState]) -> bool:
         """Check for equality of this alert and other."""
 
     @abstractmethod

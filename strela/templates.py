@@ -1,3 +1,4 @@
+from typing import Optional
 from strela.symboltype import SymbolType
 from strela.alertstates import AlertState
 
@@ -26,7 +27,7 @@ class AlertToTextTemplate:
         self,
         symbol: SymbolType,
         alert_state: AlertState,
-        old_state: AlertState,
+        old_state: Optional[AlertState],
         latest_value: float,
     ) -> str:
         return f"""\

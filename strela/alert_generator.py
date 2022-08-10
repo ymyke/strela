@@ -51,6 +51,5 @@ def generate_alerts(
             alerts.append(
                 template.apply(symbol, current_state, old_state, latest_value)
             )
-        # FIXME Type issues w old_state
 
     return alerts
