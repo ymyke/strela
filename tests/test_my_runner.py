@@ -5,7 +5,7 @@
 import pytest
 import yagmail
 from tessa.price import PriceHistory
-import strela.runner as runner
+import strela.my_runner as runner
 from .alertstates.test_alertstaterepository import patch_shelveloc
 from .helpers import create_metric_history_df
 
