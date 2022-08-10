@@ -27,7 +27,7 @@ class AlertStateRepository:
         self._fullpath = os.path.join(self._FOLDER, self.filename)
 
     def lookup_state(self, symbol_name: str) -> Optional[AlertState]:
-        """Look up ticker's state in shelf. Return None if nothing is found."""
+        """Look up symbol's state in shelf. Return None if nothing is found."""
         try:
             with shelve.open(self._fullpath) as shelf:
                 return shelf[symbol_name]
