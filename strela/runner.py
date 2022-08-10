@@ -57,12 +57,13 @@ class MyAlertToHtmlTemplate(AlertToHtmlTemplate):
 
 
 def run() -> None:
+    """Set up everything and run the alert generation."""
 
     # Prepare the symbol lists:
-    sc = SymbolCollection(symbol_class=ExtendedSymbol)
-    sc.load_yaml(SYMBOLS_FILE)
-    crypto_symbols = [x for x in sc.symbols if x.watch and x.type_ == "crypto"]
-    stockx_symbols = [x for x in sc.symbols if x.watch and x.type_ != "crypto"]
+    scoll = SymbolCollection(symbol_class=ExtendedSymbol)
+    scoll.load_yaml(SYMBOLS_FILE)
+    crypto_symbols = [x for x in scoll.symbols if x.watch and x.type_ == "crypto"]
+    stockx_symbols = [x for x in scoll.symbols if x.watch and x.type_ != "crypto"]
 
     # Set up the list of all the alert categories:
     the_alert_list = [
