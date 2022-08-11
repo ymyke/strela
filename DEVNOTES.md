@@ -10,10 +10,6 @@ These are internal notes that won't make much sense to anybody other than me...
 
 # Questions / TODOs
 
-- Improve doc, add pdoc
-- Check all imports and maybe "nicify".
-- Clean up branches.
-
 - Deployment:
   - Auf Pythonanywhere
   - Ueberwachungsscript nötig?
@@ -22,7 +18,11 @@ These are internal notes that won't make much sense to anybody other than me...
 
 # later
 
+- Make this a separate package "strela" or incorporate into "tessa"?
 - If I end up renaming the package or integrating into tessa: Find all occurences of
   "strela" and adapt accordingly.
+- Improve what/how symbols are exposed by this package and simplify some of the import
+  statements in the modules.
 - Where would mysymbols.yaml later "live"? Put it in a gist?
 - Switch to production tessa library once the add-symbols branch is released.
+- Improve doc, add pdoc
