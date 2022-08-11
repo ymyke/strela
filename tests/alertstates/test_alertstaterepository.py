@@ -33,4 +33,5 @@ def test_update_and_lookup_existing_symbol():
     assert repo.lookup_state("X") is None
     state = FluctulertState(create_metric_history_df())
     repo.update_state("X", state)
-    assert state.eq(repo.lookup_state("X"))  # FIXME Type issue
+    assert state.eq(repo.lookup_state("X"))  
+    # FIXME ^ What would be the right way to fix this type issue?
