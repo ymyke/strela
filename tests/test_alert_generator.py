@@ -1,6 +1,6 @@
 """Test the alert generator."""
 
-# pylint: disable=missing-function-docstring
+# pylint: disable=missing-function-docstring, missing-class-docstring
 
 from dataclasses import dataclass
 import re
@@ -65,12 +65,8 @@ def test_generate_fluctulerts(df_changes, pattern):
         metric_history_callback=lambda symbol: df,
         symbols=[DummySymbol("EA")],
         template=AlertToTextTemplate("", "", "Price"),
-        # FIXME Also test categoryname and alertname? Or better have specific tests for
-        # the template.
         repo=BaseAlertStateRepository("x"),
     )
-    # ^ FIXME Have one common args dict to use in all tests and just overwrite the
-    # attributes that need to be overwritten?
     if pattern:
         assert re.search(pattern, "".join(alerts), re.S)
     else:
