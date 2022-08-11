@@ -1,4 +1,4 @@
-"""FIXME"""
+"""AlertState abtract base class"""
 
 from __future__ import annotations
 from typing import Optional
@@ -7,11 +7,7 @@ from pandas import DataFrame
 
 
 class AlertState(ABC):
-    """ABC for all alert state classes.
-
-    FIXME Explain the purpose of AlterState some more. Also, what are periods as
-    mentioned in `is_ringing`?.
-    """
+    """ABC for all alert state classes."""
 
     @abstractmethod
     def __init__(self, hist: DataFrame) -> None:
