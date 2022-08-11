@@ -2,7 +2,7 @@
 
 from typing import Callable, List, Type
 import pandas as pd
-from strela.alertstates import AlertState, AlertStateRepository
+from strela.alertstates import AlertState, BaseAlertStateRepository
 from strela.symboltype import SymbolType
 from strela.templates import AlertToTextTemplate
 
@@ -12,7 +12,7 @@ def generate_alerts(
     metric_history_callback: Callable[[SymbolType], pd.DataFrame],
     symbols: List[SymbolType],
     template: AlertToTextTemplate,
-    repo: AlertStateRepository,
+    repo: BaseAlertStateRepository,
 ) -> list[str]:
     """Check list of symbols and return a list of alert strings. Returns empty list if
     no alerts are found.
