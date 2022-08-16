@@ -119,6 +119,3 @@ def print_current_configuation():
     for k, v in sorted(globals().items()):
         if looks_like_strela_setting(k):
             print(f"{k} = {v}")
-
-
-# FIXME Why is this printed?
