@@ -9,6 +9,8 @@ import slugify
 from strela import config
 from . import AlertState
 
+# FIXME Add a proper ABC for repo rather than using BaseAlertStateRepository.
+
 
 class BaseAlertStateRepository:
     """Simple repository that resides just in memory. It's also the base class for other

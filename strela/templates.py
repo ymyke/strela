@@ -12,6 +12,7 @@ from typing import Optional
 from strela.symboltype import SymbolType
 from strela.alertstates import AlertState
 
+# FIXME Add a proper ABC for templates rather than using AlertToTextTemplate.
 
 class AlertToTextTemplate:
     """Template to turn alert into text string. Also serves as the base class for other
