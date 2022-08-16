@@ -29,7 +29,7 @@ Use this to verify what gets set in the end:
 >>> strela.config.print_current_configuation()
 """
 
-import importlib
+import runpy
 import os
 
 # ---------- Settings ----------
@@ -77,18 +77,17 @@ if USER_CONFIG_MODULE_PATH is None:
         "specified by the environment variable STRELA_CONFIG_FILE."
     )
 
-# Try to load a module at that path:
-try:
-    _module_spec = importlib.util.spec_from_file_location(
-        USER_CONFIG_MODULE_NAME, USER_CONFIG_MODULE_PATH
-    )
-    _module = importlib.util.module_from_spec(_module_spec)
-    _module_spec.loader.exec_module(_module)
-    globals().update(_module.__dict__)
-except AttributeError as exc:
-    raise RuntimeError(
-        f"Cannot import {USER_CONFIG_MODULE_PATH}. Please check your configuration."
-    ) from exc
+# Load the module at that path and update/overwrite the globals in this module with
+# whatever we find in there that looks like a strela setting:
+def looks_like_strela_setting(key: str) -> bool:
+    """Return True if the key looks like a strela setting, i.e., all uppercase and not
+    starting with a `_`.
+    """
+    return key.isupper() and not key.startswith("_")
+
+
+new_globals = runpy.run_path(USER_CONFIG_MODULE_PATH)
+globals().update({k: v for k, v in new_globals.items() if looks_like_strela_setting(k)})
 
 # Make sure all mandatory variables are set:
 MANDATORY_PARAMS = ["ALERT_REPOSITORY_FOLDER"]
@@ -118,6 +117,8 @@ def print_current_configuation():
     the user's config file).
     """
     for k, v in sorted(globals().items()):
-        if k.startswith("_") or not k.isupper():
-            continue
-        print(f"{k} = {v}")
+        if looks_like_strela_setting(k):
+            print(f"{k} = {v}")
+
+
+# FIXME Why is this printed?
