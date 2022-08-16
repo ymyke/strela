@@ -6,7 +6,8 @@ configuration file with the user's (your) specific settings. This user config fi
 expected to be called `my_config.py` and to be placed in either of these locations:
 
 1. At the path the environment variable `STRELA_CONFIG_FILE` is set to.
-2. In ~/.strela/my_config.py
+2. The current directory.
+3. In ~/.strela/my_config.py
 
 A typical/minimal my_config.py might look like this:
 
@@ -60,11 +61,21 @@ ALERT_REPOSITORY_FOLDER = None
 USER_CONFIG_MODULE_PATH = None  # path to user's config file; shouldn't be None at end
 USER_CONFIG_MODULE_NAME = "my_config.py"
 
-# Set the path to either the environment variable `STRELA_CONFIG_FILE` or to, e.g.,
-# ~/.strela/my_config.py:
-USER_CONFIG_MODULE_PATH = os.getenv("STRELA_CONFIG_FILE") or os.path.join(
-    os.path.expanduser("~"), "." + LIBRARY_NAME, USER_CONFIG_MODULE_NAME
-)
+# Check the three possible locations for the user's config file:
+for _path_candidate in [
+    os.getenv("STRELA_CONFIG_FILE"),
+    os.path.join(os.path.expanduser("~"), "." + LIBRARY_NAME, USER_CONFIG_MODULE_NAME),
+    os.path.join(os.getcwd(), USER_CONFIG_MODULE_NAME),
+]:
+    if _path_candidate is not None and os.path.isfile(_path_candidate):
+        USER_CONFIG_MODULE_PATH = _path_candidate
+        break
+if USER_CONFIG_MODULE_PATH is None:
+    raise RuntimeError(
+        f"No config file found. Please create {USER_CONFIG_MODULE_NAME} in "
+        "either the current directory, ~/.strela/, or in the path "
+        "specified by the environment variable STRELA_CONFIG_FILE."
+    )
 
 # Try to load a module at that path:
 try:
@@ -77,11 +88,6 @@ try:
 except AttributeError as exc:
     raise RuntimeError(
         f"Cannot import {USER_CONFIG_MODULE_PATH}. Please check your configuration."
-    ) from exc
-except FileNotFoundError as exc:
-    raise FileNotFoundError(
-        f"User config file {USER_CONFIG_MODULE_PATH} doesn't exist. "
-        "Please create it and/or check your configuration."
     ) from exc
 
 # Make sure all mandatory variables are set:
