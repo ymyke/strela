@@ -1,8 +1,11 @@
+# Python- and environment-related:
 .venv/
 dist/
-data/
 *.pyc
 poetry.lock
 settings.json
 http_cache.sqlite
+
+# strela-related:
 my_config.py
+data/
