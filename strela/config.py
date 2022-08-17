@@ -6,7 +6,7 @@ configuration file with the user's (your) specific settings. This user config fi
 expected to be called `my_config.py` and to be placed in either of these locations:
 
 1. At the path the environment variable `STRELA_CONFIG_FILE` is set to.
-2. The current directory.
+2. The current directory (at the time of importing the config).
 3. In ~/.strela/my_config.py
 
 A typical/minimal my_config.py might look like this:
@@ -20,9 +20,23 @@ ALERT_REPOSITORY_FOLDER = "/path/to/your/alerts-data-folder/"
 
 You could, for example, put everything in a hidden folder in your home directory with
 the following items:
-- ~/.strela/ -- folder for strela-related files
-- ~/.strela/my_config.py -- user config file (will be found automatically)
-- ~/.strela/data/ -- folder for the alert repository
+- `~/.strela/`: Folder for strela-related files
+- `~/.strela/my_config.py`: User config file (will be found automatically)
+- `~/.strela/data/`: Folder for the alert repository
+
+Overview of the most important settings:
+- `SYMBOLS_FILE`: Path to the file containing the symbols to be monitored.
+- `MAIL_FROM_ADDRESS`: The email address to use as sender, i.e. your email address. Will
+  also be used for authentication.
+- `MAIL_PASSWORD`: The password to use for authentication. It is strongly recommended to
+  use an application password.
+- `ALERT_REPOSITORY_FOLDER`: The folder to store the alert repository in.
+
+Debugging options:
+- `ENABLE_ALL_DOWS`: If True, ignore day-of-week settings and run on all days.
+- `NO_MAIL`: If True, don't send mail and instead print alerts to stdout.
+
+Refer to the comments in this file's source code for more details.
 
 Use this to verify what gets set in the end:
 >>> import strela.config
@@ -34,7 +48,7 @@ import os
 
 # ---------- Settings ----------
 
-LIBRARY_NAME = "strela"
+PACKAGE_NAME = "strela"
 
 # Debugging options:
 # If True, ignore day-of-week settings and run on all days:
@@ -47,8 +61,19 @@ NO_MAIL = False
 SYMBOLS_FILE = None  # path to symbols file
 
 # Mail settings:
-MAIL_FROM_ADDRESS = None  # your email address
-MAIL_PASSWORD = None  # your email password; please use an application password
+# The email address to use as sender, i.e. your email address. Will also be used for
+# authentication:
+MAIL_FROM_ADDRESS = None
+# The password to use for authentication. It is strongly recommended to use an
+# application password.
+MAIL_PASSWORD = None
+
+# The following two settings are optional. They will be set to MAIL_FROM_ADDRESS if undefined.
+# Who the mail is sent to:
+MAIL_TO_ADDRESS = None
+# The address to send test mails to:
+MAIL_TEST_TO_ADDRESS = None
+
 
 # The folder where the alert repo is stored:
 ALERT_REPOSITORY_FOLDER = None
@@ -64,7 +89,7 @@ USER_CONFIG_MODULE_NAME = "my_config.py"
 # Check the three possible locations for the user's config file:
 for _path_candidate in [
     os.getenv("STRELA_CONFIG_FILE"),
-    os.path.join(os.path.expanduser("~"), "." + LIBRARY_NAME, USER_CONFIG_MODULE_NAME),
+    os.path.join(os.path.expanduser("~"), "." + PACKAGE_NAME, USER_CONFIG_MODULE_NAME),
     os.path.join(os.getcwd(), USER_CONFIG_MODULE_NAME),
 ]:
     if _path_candidate is not None and os.path.isfile(_path_candidate):
@@ -79,11 +104,9 @@ if USER_CONFIG_MODULE_PATH is None:
 
 # Load the module at that path and update/overwrite the globals in this module with
 # whatever we find in there that looks like a strela setting:
-def looks_like_strela_setting(key: str) -> bool:
-    """Return True if the key looks like a strela setting, i.e., all uppercase and not
-    starting with a `_`.
-    """
-    return key.isupper() and not key.startswith("_")
+def looks_like_strela_setting(string: str) -> bool:
+    """Return True if `string` looks like a strela setting."""
+    return string.isupper() and not string.startswith("_")
 
 
 new_globals = runpy.run_path(USER_CONFIG_MODULE_PATH)
@@ -102,18 +125,18 @@ if not os.path.isdir(ALERT_REPOSITORY_FOLDER):
         "Please create it and/or check your configuration."
     )
 
-# ---------- Set some settings that depend on other settings ----------
+# ---------- (Re)Set some settings that depend on other settings ----------
 
-# Who the mail is sent to:
-MAIL_TO_ADDRESS = MAIL_FROM_ADDRESS
-# This address will be used to send test mails to:
-MAIL_TEST_TO_ADDRESS = MAIL_FROM_ADDRESS
+for _setting in ["MAIL_TO_ADDRESS", "MAIL_TEST_TO_ADDRESS"]:
+    if globals().get(_setting, None) is None:
+        globals()[_setting] = MAIL_FROM_ADDRESS
+
 
 # ---------- END // Functions ----------
 
 
 def print_current_configuation():
-    """Print all the variables from this file (and whatever has been set/overwritten in
+    """Print all the settings from this file (and whatever has been set/overwritten in
     the user's config file).
     """
     for k, v in sorted(globals().items()):
