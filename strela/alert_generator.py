@@ -17,15 +17,14 @@ def generate_alerts(
     """Check list of symbols and return a list of alert strings. Returns empty list if
     no alerts are found.
 
-    Args:
-    - alertstate_class: `strela.alertstates.AlertState` subclass to be used to track
-      state and determine whether an alert has been triggered.
-    - get_metrichistory_callback: Callback that returns historic data for that symbol
-      and the metric under observation as a dataframe. The dataframe must have
-      timestamps as the index and exactly one column with the metric
-    - symbols: The list of symbols to be analyzed.
-    - template: The template to use to generate the alert text.
-    - repo: The repo to use to retrieve and store the state of alerts.
+    - `alertstate_class`: The `strela.alertstates.AlertState` subclass to be used to
+      track state and determine whether an alert has been triggered.
+    - `get_metrichistory_callback`: Callback that returns historic data for the given
+      symbol and the metric under observation as a dataframe. The dataframe must have
+      timestamps as the index and exactly one column with the metric.
+    - `symbols`: The list of symbols to be analyzed.
+    - `template`: The template to use to generate the alert text.
+    - `repo`: The repository to use to retrieve and store the state of alerts.
 
     Note that this function is kept very generic so you can plug in your own building
     blocks.
