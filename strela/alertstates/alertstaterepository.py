@@ -9,12 +9,11 @@ import slugify
 from strela import config
 from . import AlertState
 
-# FIXME Add a proper ABC for repo rather than using BaseAlertStateRepository.
-
 
 class BaseAlertStateRepository:
     """Simple repository that resides just in memory. It's also the base class for other
-    repository classes.
+    repository classes. (*Note: Should add a proper ABC base class here eventually.
+    (FIXME)*)
     """
 
     def __init__(self, _):
@@ -36,7 +35,7 @@ class BaseAlertStateRepository:
 
 
 class AlertStateRepository(BaseAlertStateRepository):
-    """Simple repository for `AlertState`s based on `shelve` package."""
+    """Simple repository for `AlertState`s based on shelve package."""
 
     _FOLDER = config.ALERT_REPOSITORY_FOLDER
     _BACKUPFOLDER = os.path.join(_FOLDER, "backups")
