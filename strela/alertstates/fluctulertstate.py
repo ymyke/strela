@@ -1,5 +1,7 @@
+"""Fluctulert state."""
+
 from __future__ import annotations
-from typing import Optional
+from typing import Optional, ClassVar
 from dataclasses import InitVar, dataclass, field
 import re
 from pandas import DataFrame
@@ -9,35 +11,33 @@ from . import AlertState
 
 @dataclass
 class PeriodStat:
-    """
-    Args:
-    - period: in days
-    - dtrigger: required dmin / dmax to trigger an alert
-    - hist: DataFrame with daily values for the metric (e.g., in the case of price
-      history, as provided by Asset.price_history)
-
-    Derived attributes:
-    - dmin, dmax: difference in % between lastvalue and min / max value in period
-    """
+    """Helper class to calculate the stats for a given period in the history."""
 
     period: int
+    """The period length in days."""
+
     dtrigger: float
+    """Required dmin / dmax to trigger an alert."""
+
     hist: InitVar[DataFrame]
+    """Dataframe with daily values for the metric."""
 
     dmin: float = field(init=False)
-    dmax: float = field(init=False)
+    """Difference in % between lastvalue and min value in period. Derived attribute."""
 
-    def __post_init__(self, hist):
-        """Calc dmin and dmax.
+    dmax: float = field(init=False)
+    """Difference in % between lastvalue and max value in period. Derived attribute."""
+
+    def __post_init__(self, hist: DataFrame):
+        """Calculate dmin and dmax.
 
         (post-init bc this is a dataclass that has a default initiator.)
 
-        Args:
-        - hist: A dataframe with timestamp as the index and exactly 1 column with the
+        - `hist`: A dataframe with timestamp as the index and exactly 1 column with the
           values for the metric. The function picks this one column to do the
           calculations.
 
-        (Example dataframe: '{"p-e":{"1604275200000":33.32}}')
+        (Example dataframe: '{"price":{"1604275200000":33.32}}')
         """
         if hist.shape[1] != 1:
             raise ValueError("Need a dataframe with exactly 1 column.")
@@ -56,16 +56,16 @@ class PeriodStat:
         self.dmin = abs((lastvalue - minvalue) / minvalue)
         self.dmax = abs((maxvalue - lastvalue) / maxvalue)
 
-    def maxtriggers(self):
+    def maxtriggers(self) -> bool:
         """Whether it triggers on max."""
         return self.dmax >= self.dtrigger
 
-    def mintriggers(self):
+    def mintriggers(self) -> bool:
         """Whether it triggers on min."""
         return self.dmin >= self.dtrigger
 
     def eq(self, other: PeriodStat) -> bool:
-        """Check for equality of this PeriodStat and other. Equality simply means that
+        """Check for equality of this PeriodStat and `other`. Equality simply means that
         both objects trigger the same way.
         """
         return (self.maxtriggers(), self.mintriggers()) == (
@@ -75,20 +75,12 @@ class PeriodStat:
 
 
 class FluctulertState(AlertState):
-    """Concrete class for fluctulert states.
+    """Concrete class for fluctulert states."""
 
-    Attributes:
-    - stats: A collection of PeriodStat objects.
+    # Class variables:
 
-    Settings / class attributes:
-    - _period_trigger_config: The different levels at which to trigger. E.g., (14, 0.1)
-      means: If there is a 10% change in 14 days, trigger an alert.
-    """
-
-    stats = []
-
-    _period_trigger_config = [  # FIXME Should this be configurable?
-        (3, 0.05),
+    period_trigger_config: ClassVar[list] = [
+        (3, 0.05),  # FIXME Should these be configurable?
         (6, 0.07),
         (14, 0.1),
         (30, 0.15),
@@ -97,12 +89,19 @@ class FluctulertState(AlertState):
         (180, 0.3),
         (360, 0.35),
     ]
+    """The different levels at which to trigger. E.g., (14, 0.1) means: If there is a
+    10% change in 14 days, trigger an alert."""
+
+    # Instance variables:
+
+    stats: list
+    """A collection of `PeriodStat` objects."""
 
     def __init__(self, hist: DataFrame) -> None:
         super().__init__(hist)
         self.stats = [
             PeriodStat(period, trigger, hist)
-            for period, trigger in self._period_trigger_config
+            for period, trigger in self.period_trigger_config
         ]
 
     def textify(self, other: Optional[FluctulertState] = None) -> str:
@@ -137,7 +136,7 @@ class FluctulertState(AlertState):
         return self.textify() != ""
 
     def eq(self, other: Optional[FluctulertState]) -> bool:
-        """Check for equality of this PeriodStat and other."""
+        """Check for equality of this PeriodStat and `other`."""
         return other is not None and all(
             a.eq(b) for a, b in zip(self.stats, other.stats)
         )

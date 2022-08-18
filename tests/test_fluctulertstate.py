@@ -98,10 +98,10 @@ def test_fluctulertstate_init_allsame(fs1):
     assert sum(p.dmax for p in fs1.stats) == 0
     # pylint: disable=protected-access
     assert sum(p.dtrigger for p in fs1.stats) == sum(
-        t for _, t in FluctulertState._period_trigger_config
+        t for _, t in FluctulertState.period_trigger_config
     )
     assert sum(p.period for p in fs1.stats) == sum(
-        p for p, _ in FluctulertState._period_trigger_config
+        p for p, _ in FluctulertState.period_trigger_config
     )
 
 
