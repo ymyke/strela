@@ -41,6 +41,8 @@ class AlertStateRepository(BaseAlertStateRepository):
     _BACKUPFOLDER = os.path.join(_FOLDER, "backups")
 
     def __init__(self, filename: str):  # pylint: disable=super-init-not-called
+        """Create a new repository. `filename` is the name of the shelf file to be
+        used."""
         self.filename = slugify.slugify(filename)
         self._fullpath = os.path.join(self._FOLDER, self.filename)
 
