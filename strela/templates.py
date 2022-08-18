@@ -1,7 +1,5 @@
 """Templates that turn alerts into strings.
 
-Notes:
-
 - Currently, alerts are already barebone strings, and these templates rather "embellish"
   them.
 - There are no specific tests for this module bc other tests also implicitly test the
@@ -12,11 +10,11 @@ from typing import Optional
 from strela.symboltype import SymbolType
 from strela.alertstates import AlertState
 
-# FIXME Add a proper ABC for templates rather than using AlertToTextTemplate.
 
 class AlertToTextTemplate:
     """Template to turn alert into text string. Also serves as the base class for other
-    templates.
+    templates. (*Note: Should add a proper ABC for templates rather than using
+    AlertToTextTemplate (FIXME).*)
     """
 
     def __init__(
@@ -28,11 +26,10 @@ class AlertToTextTemplate:
     ):
         """`AlertToTextTemplate` initializer.
 
-        Args:
-        - category_name: Alert category, e.g. "Crypto".
-        - alert_name: Alert name, e.g. "Fluctulert".
-        - metric_name: Metric name, e.g. "Price".
-        - link_pattern: Link pattern, will be extrapolated in `apply`, e.g.
+        - `category_name`: Alert category, e.g. "Crypto".
+        - `alert_name`: Alert name, e.g. "Fluctulert".
+        - `metric_name`: Metric name, e.g. "Price".
+        - `link_pattern`: Link pattern, will be extrapolated in `apply`, e.g.
           "https://www.google.com/search?q={symbol.name}+stock"
 
         All the names are informational only and have no functional purpose.
@@ -43,7 +40,7 @@ class AlertToTextTemplate:
         self.link_pattern = link_pattern
 
     def get_title(self) -> str:
-        """Returns the title/subject of the alert."""
+        """Return the title/subject of the alert."""
         return f"📈🚨📉 {self.category_name} {self.metric_name} {self.alert_name}"
 
     def apply(
@@ -53,13 +50,12 @@ class AlertToTextTemplate:
         old_state: Optional[AlertState],
         latest_value: float,
     ) -> str:
-        """Extrapolates the template into a string and returns it.
+        """Extrapolate the template into a string and return it.
 
-        Args:
-        - symbol: Symbol for which the alert is being generated.
-        - alert_state: Current state of the alert.
-        - old_state: Previous state of the alert.
-        - latest_value: Latest value of the metric.
+        - `symbol`: Symbol for which the alert is being generated.
+        - `alert_state`: Current state of the alert.
+        - `old_state`: Previous state of the alert.
+        - `latest_value`: Latest value of the metric.
         """
         return f"""\
 {symbol.name} ⚠lert
@@ -79,7 +75,6 @@ class AlertToHtmlTemplate(AlertToTextTemplate):
         old_state: AlertState,
         latest_value: float,
     ) -> str:
-        """Extrapolates the template into HTML and returns it."""
         return f"""\
 <a href="{self.link_pattern.format(symbol=symbol)}">{symbol.name} ⚠lert</a>
 {alert_state.htmlify(old_state).rstrip()}
@@ -87,7 +82,7 @@ Latest {self.metric_name}: {latest_value}
 """
 
     def wrap_body(self, body: str) -> str:
-        """Wraps the alert in HTML wrapper tags."""
+        """Wrap the alert in HTML wrapper tags."""
         return f"""\
 <pre><font face="Consolas, Lucida Console, Fira Code, Courier New, Courier, monospace">
 {body}
