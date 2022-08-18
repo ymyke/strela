@@ -1,14 +1,14 @@
 """Orchestrate all the building blocks to create and send alerts.
 
-The script in here is customized for my requirements and environment. Use it as a
-blueprint to build your own runner.
+This script is customized for my requirements and environment. Use it as a blueprint to
+build your own runner.
 
 It is intended to be run from a cron job or similar service (e.g., Windows Task
 Scheduler). The way this script is set up, you can simply run it once a day and it'll
 only run the alerts that are supposed to run on a given weekday.
 
-Use something like this Powershell script to set up your virtual environment and run the
-script:
+If you work with a virtual environment, use a Bash script or something like this
+Powershell script to set up your virtual environment and run the script:
 
 ```powershell
 cd <project-root>
@@ -40,8 +40,8 @@ GOOGLE_URL = "https://www.google.com/search?q={symbol.name}+stock"
 
 # Customized template derived from default HTML template:
 class MyAlertToHtmlTemplate(AlertToHtmlTemplate):
-    """Subclass that adds strategy information to an alert. Requires symbol to be of
-    type `tessa.symbol.ExtendedSymbol`."""
+    """Template subclass that adds strategy information to an alert. Requires symbol to
+    be of type `tessa.symbol.ExtendedSymbol`."""
 
     def apply(self, symbol: SymbolType, *args, **kwargs) -> str:
         return (
