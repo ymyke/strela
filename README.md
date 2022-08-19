@@ -45,9 +45,9 @@ cronjob or similar facilities and runs everything necessary according to your ne
 
 ## Limitations
 
-The overall software architecture does feature decent modularization and separation of
-concerns, but also have a lot of room left for improvement. E.g., better separation of
-concerns in AlertStates (they mix logic and output currently), better parametrization of
+The overall software architecture features decent modularization and separation of
+concerns, but also has a lot of room left for improvement. E.g., better separation of
+concerns in AlertStates (mixing logic and output currently), better parametrization of
 alert states and templates, better extensibility, etc. 
 
 ## strela vs tessa
