@@ -2,7 +2,7 @@
 .. include:: ../README.md
 """
 
-__version__ = "0.2.3"
+__version__ = "0.2.4"
 
 from . import config
 from . import alertstates

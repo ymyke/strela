@@ -3,23 +3,28 @@
 # pylint: disable=unused-import, no-member, missing-function-docstring, unused-argument
 
 import pytest
+import pandas as pd
 import yagmail
-from tessa.price import PriceHistory
+from tessa.price import PriceHistory, price_history
 from strela import config
 import strela.my_runner as runner
-from .alertstates.test_alertstaterepository import patch_shelveloc
 from .helpers import create_metric_history_df
+
+# patch_shelveloc is an "autouse" fixture that sets the temporary folder for the repo:
+from .alertstates.test_alertstaterepository import patch_shelveloc
 
 
 @pytest.fixture(name="prepare_environment")
-def fixture_prepare_environment(tmp_path):
-    # Prepare environment:
+def fixture_prepare_environment(mocker, tmp_path):
+    mocker.patch(
+        "tessa.symbol.Symbol.price_history",
+        return_value=PriceHistory(create_metric_history_df(allsame=False), "USD"),
+    )
     file = tmp_path / "symbols.yaml"
     file.write_text(
         """\
 testcryptosymbolname:
   type_: crypto
-  query: bankless-defi-innovation-index
   strategy: [HoldForGrowth, HoldForDiversification]
   watch: True
   jurisdiction: unknown
@@ -31,16 +36,9 @@ testcryptosymbolname:
 
 
 def test_price_run(mocker, prepare_environment):
-    mocker.patch(
-        "tessa.symbol.Symbol.price_history",
-        return_value=PriceHistory(create_metric_history_df(allsame=False), "USD"),
-    )
+    """This will mock yagmail and verify if a mail would have been sent."""
     mocker.patch("yagmail.SMTP")
-
-    # Run:
     runner.run()
-
-    # Check:
     yagmail.SMTP.assert_called()  # type: ignore
     yagmail.SMTP().send.assert_any_call(
         to=config.MAIL_TEST_TO_ADDRESS,
@@ -51,6 +49,14 @@ def test_price_run(mocker, prepare_environment):
 
 
 @pytest.mark.net
-def test_mailingalert_mail_real(prepare_environment):
-    """This will send mail to user."""
+def test_mailingalert_mail_real(mocker, prepare_environment):
+    """This will actually send an email to the user."""
     runner.run()
+
+
+@pytest.mark.net
+def test_tessa_integration():
+    """Make sure we can access price information via tessa."""
+    res = price_history("ethereum", type_="crypto")
+    assert isinstance(res.df, pd.DataFrame)
+    assert res.df.shape[0] > 0
