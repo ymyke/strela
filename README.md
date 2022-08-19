@@ -43,6 +43,16 @@ cronjob or similar facilities and runs everything necessary according to your ne
    and/or `strela.config.NO_MAIL` to `True`.)
 4. Install your runner script as a daily cronjob or similar.
 
+## Example alerts
+
+What a single Fluctulert looks like in the alert e-mail:
+
+![Fluctulert example](https://raw.githubusercontent.com/ymyke/strela/master/docs/images/fluctulert_example.png?token=GHSAT0AAAAAABVYSCNRSV2FKNFBTPDE4NIGYX7OHDQ)
+
+What a single DoubleDownAlert looks like in the alert e-mail:
+
+![DoubleDownAlert example](https://raw.githubusercontent.com/ymyke/strela/master/docs/images/doubledownalert_example.png?token=GHSAT0AAAAAABVYSCNRBTY3C7IQ2KI4SDKCYX7OHAQ)
+
 ## Limitations
 
 The overall software architecture features decent modularization and separation of
