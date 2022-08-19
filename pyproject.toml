@@ -19,7 +19,7 @@ black = "*"
 pylint = "*"
 ipykernel = "*"
 pytest-mock = "*"
-pdoc = "^12.1.0"
+pdoc = "*"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
