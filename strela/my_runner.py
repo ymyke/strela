@@ -13,7 +13,7 @@ Powershell script to set up your virtual environment and run the script:
 ```powershell
 cd <project-root>
 . ./.venv/Scripts/Activate.ps1
-python strela/runner.py
+python strela/my_runner.py
 ```
 """
 
