@@ -84,5 +84,6 @@ issue.](https://github.com/ymyke/strela/issues/1)
 
 ## A note on tests
 
-Some of the tests hit the net and are marked as such with `pytest.mark.net`.
+Some of the tests hit the net and are marked as such with `pytest.mark.net`. That way,
+you can easily run exclude those tests if you like: `pytest -m "not net"`.
 
