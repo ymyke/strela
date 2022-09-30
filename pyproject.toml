@@ -20,6 +20,7 @@ pylint = "*"
 ipykernel = "*"
 pytest-mock = "*"
 pdoc = "*"
+pdbpp = "^0.10.3"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
