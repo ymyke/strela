@@ -24,7 +24,7 @@ def fixture_prepare_environment(mocker, tmp_path):
     file.write_text(
         """\
 testcryptosymbolname:
-  type_: crypto
+  source: coingecko
   strategy: [HoldForGrowth, HoldForDiversification]
   watch: True
   jurisdiction: unknown
@@ -57,6 +57,6 @@ def test_mailingalert_mail_real(mocker, prepare_environment):
 @pytest.mark.net
 def test_tessa_integration():
     """Make sure we can access price information via tessa."""
-    res = price_history("ethereum", type_="crypto")
+    res = price_history("ethereum", source="coingecko")
     assert isinstance(res.df, pd.DataFrame)
     assert res.df.shape[0] > 0

@@ -10,8 +10,7 @@ pandas = ">=1.3.5"
 yagmail = ">=0.15.280"
 keyring = ">=23"    # for yagmail
 python-slugify = ">=5.0.0"
-tessa = {git = "https://github.com/ymyke/tessa.git", rev = "add-symbols"}
-# ^ FIXME Use production package once add-symbols branch is released
+tessa = "^0.4.1"
 
 [tool.poetry.dev-dependencies]
 pytest = "*"
