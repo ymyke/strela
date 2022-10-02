@@ -1,8 +1,14 @@
 [tool.poetry]
 name = "strela"
 version = "0.3.0"
-description = ""
+description = "A python package for financial alerts"
 authors = ["ymyke"]
+license = "MIT"
+repository = "https://github.com/ymyke/strela"
+homepage = "https://github.com/ymyke/strela"
+documentation = "https://ymyke.github.io/strela/strela.html"
+readme = "README.md"
+keywords = ["python", "finance", "financial-analysis", "financial", "alerts", "alerting", "tessa"]
 
 [tool.poetry.dependencies]
 python = ">=3.7.13,<3.10"
