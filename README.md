@@ -7,6 +7,8 @@ The package is intended to be used to write a Python script that can be schedule
 cronjob or similar facilities and runs everything necessary according to your needs. See
 `strela.my_runner` as an example.
 
+[→ Check out the full documentation. 📖](https://ymyke.github.io/strela/strela.html)
+
 ## Features & overview
 
 - `strela.alert_generator`: The central logic that brings all the building blocks
@@ -47,11 +49,11 @@ cronjob or similar facilities and runs everything necessary according to your ne
 
 What a single Fluctulert looks like in the alert e-mail:
 
-![Fluctulert example](https://raw.githubusercontent.com/ymyke/strela/master/docs/images/fluctulert_example.png?token=GHSAT0AAAAAABVYSCNRSV2FKNFBTPDE4NIGYX7OHDQ)
+![Fluctulert example](https://raw.githubusercontent.com/ymyke/strela/master/docs/images/fluctulert_example.png)
 
 What a single DoubleDownAlert looks like in the alert e-mail:
 
-![DoubleDownAlert example](https://raw.githubusercontent.com/ymyke/strela/master/docs/images/doubledownalert_example.png?token=GHSAT0AAAAAABVYSCNRBTY3C7IQ2KI4SDKCYX7OHAQ)
+![DoubleDownAlert example](https://raw.githubusercontent.com/ymyke/strela/master/docs/images/doubledownalert_example.png)
 
 ## Limitations
 
@@ -87,3 +89,6 @@ issue.](https://github.com/ymyke/strela/issues/1)
 Some of the tests hit the net and are marked as such with `pytest.mark.net`. That way,
 you can easily run exclude those tests if you like: `pytest -m "not net"`.
 
+## Link to Repository
+
+https://github.com/ymyke/strela
