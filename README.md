@@ -92,3 +92,8 @@ you can easily run exclude those tests if you like: `pytest -m "not net"`.
 ## Link to Repository
 
 https://github.com/ymyke/strela
+
+## Other noteworthy libraries
+
+- [tessa](https://github.com/ymyke/tessa): Find financial assets and get their price history without worrying about different APIs or rate limiting.
+- [pypme](https://github.com/ymyke/pypme): A Python package for PME (Public Market Equivalent) calculation.
