@@ -1,6 +1,8 @@
 """Central function to analyze symbols and create alerts."""
 
 from typing import Callable, List, Type
+import logging
+import traceback
 import pandas as pd
 from strela.alertstates import AlertState, BaseAlertStateRepository
 from strela.symboltype import SymbolType
@@ -33,7 +35,11 @@ def generate_alerts(
     alerts = []
     for symbol in symbols:
         # Get metric history:
-        hist = metric_history_callback(symbol)
+        try:
+            hist = metric_history_callback(symbol)
+        except Exception:   # pylint: disable=broad-except
+            logging.error(traceback.format_exc())
+            continue
         if hist is None or not isinstance(hist, pd.DataFrame) or hist.shape[0] == 0:
             continue
         latest_value = hist.values[-1][0]
