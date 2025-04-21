@@ -18,7 +18,7 @@ keyring = ">=23"    # for yagmail
 python-slugify = ">=5.0.0"
 tessa = "^0"
 
-[tool.poetry.dev-dependencies]
+[poetry.group.dev.dependencies]
 pytest = "*"
 black = "*"
 pylint = "*"
