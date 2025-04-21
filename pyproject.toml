@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "strela"
-version = "0.3.4"
+version = "0.4"
 description = "A python package for financial alerts"
 authors = ["ymyke"]
 license = "MIT"
